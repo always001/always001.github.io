@@ -4,604 +4,819 @@
 <meta charset="UTF-8" />
 <title>🎲 数学乐园 · 骰子专题 · math-practice_0002</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
 <style>
-  :root {
-    --bg: #f5f7fb;
-    --card-bg: #ffffff;
-    --primary: #4a6cf7;
-    --primary-soft: #e0e6ff;
-    --border-soft: #e2e6f3;
-    --text-main: #222;
-    --text-sub: #666;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: radial-gradient(circle at top left, #eef2ff, #f5f7fb);
-    color: var(--text-main);
-  }
-  header {
-    background: linear-gradient(120deg, #4a6cf7, #7b5dfd);
-    color: #fff;
-    padding: 14px 18px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-  }
-  header h1 {
-    margin: 0;
-    font-size: 20px;
-    letter-spacing: 0.03em;
-  }
-  header small {
-    display: block;
-    margin-top: 4px;
-    font-size: 12px;
-    opacity: 0.9;
-  }
-  main {
-    max-width: 1200px;
-    margin: 16px auto;
-    padding: 0 12px 20px;
-  }
-  .layout {
-    display: grid;
-    grid-template-columns: 2.2fr 1.2fr;
-    gap: 14px;
-  }
-  .panel {
-    background: var(--card-bg);
-    border-radius: 12px;
-    padding: 12px 14px;
-    box-shadow: 0 4px 10px rgba(15,23,42,0.06);
-    border: 1px solid var(--border-soft);
-  }
-  .panel h2 {
-    margin: 0 0 8px;
-    font-size: 17px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .panel h2::before {
-    content: "◆";
-    font-size: 10px;
-    color: var(--primary);
-  }
-  .meta {
-    font-size: 13px;
-    color: var(--text-sub);
-    margin-bottom: 6px;
-  }
-  .statement {
-    font-size: 15px;
-    padding: 8px 10px;
-    border-radius: 8px;
-    background: #f8f9ff;
-    border: 1px dashed #d3d8f5;
-    margin-bottom: 8px;
-  }
-  .answer-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 6px;
-    margin-top: 4px;
-  }
-  .answer-row label {
-    font-size: 14px;
-  }
-  input[type="text"] {
-    padding: 6px 8px;
-    border-radius: 6px;
-    border: 1px solid #cbd5f5;
-    min-width: 120px;
-    font-size: 14px;
-  }
-  input[type="text"]:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 1px rgba(74,108,247,0.25);
-  }
-  button {
-    padding: 6px 10px;
-    border-radius: 999px;
-    border: none;
-    cursor: pointer;
-    font-size: 13px;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    white-space: nowrap;
-  }
-  button.primary {
-    background: var(--primary);
-    color: #fff;
-  }
-  button.primary:hover {
-    background: #3b5ae0;
-  }
-  button.secondary {
-    background: var(--primary-soft);
-    color: #333;
-  }
-  button.secondary:hover {
-    background: #d4dcff;
-  }
-  .answer-result {
-    font-size: 13px;
-    min-height: 18px;
-  }
-  .solution-panel {
-    border-radius: 8px;
-    border: 1px solid #e1e4f5;
-    margin-bottom: 8px;
-    background: #fafbff;
-  }
-  .solution-title {
-    padding: 6px 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .solution-title::after {
-    content: "展开 ▾";
-    font-size: 11px;
-    color: var(--text-sub);
-  }
-  .solution-title.open::after {
-    content: "收起 ▴";
-  }
-  .solution-content {
-    padding: 6px 10px 8px;
-    font-size: 13px;
-    color: var(--text-main);
-  }
-  .solution-content p {
-    margin: 4px 0;
-  }
-  #animation-area h3,
-  #threejs-area h3 {
-    margin: 6px 0;
-    font-size: 14px;
-    color: var(--text-sub);
-  }
-  #stats-area {
-    font-size: 13px;
-    color: var(--text-sub);
-    margin: 6px 0 8px;
-  }
-  select {
-    padding: 4px 6px;
-    border-radius: 6px;
-    border: 1px solid #cbd5f5;
-    font-size: 13px;
-    background: #f8f9ff;
-  }
-  select:focus {
-    outline: none;
-    border-color: var(--primary);
-  }
-  .right-panel-row {
-    margin-bottom: 8px;
-    font-size: 13px;
-  }
-  .right-panel-row label {
-    margin-right: 4px;
-  }
-  canvas {
-    background: #fff;
-  }
-  @media (max-width: 900px) {
-    .layout {
-      grid-template-columns: 1fr;
-    }
-  }
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f5f7fb;
+}
+
+header {
+  background: #4a6cf7;
+  color: #fff;
+  padding: 12px 16px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+header small {
+  display: block;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+main {
+  padding: 12px 16px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/* 通用卡片 */
+.panel {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+}
+
+.panel h2, .panel h3 {
+  margin-top: 0;
+}
+
+/* 输入区 */
+.input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+input[type="number"] {
+  width: 80px;
+  padding: 6px 8px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* 按钮 */
+button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+button.primary {
+  background: #4a6cf7;
+  color: #fff;
+}
+
+button.secondary {
+  background: #e0e4ff;
+  color: #333;
+}
+
+button.danger {
+  background: #ff6b6b;
+  color: #fff;
+}
+
+/* 多解法卡片 */
+.explain-block {
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #f8f9ff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.explain-block-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #3b4fd9;
+}
+
+.solution-card {
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #e0e4ff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.solution-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.solution-title {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.solution-toggle {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: none;
+  background: #e0e4ff;
+  color: #333;
+  cursor: pointer;
+}
+
+.solution-content {
+  margin-top: 8px;
+}
+
+/* 动画区 */
+#animation-panel {
+  background: #f8f9ff;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+  margin-top: 16px;
+}
+
+#cartoon-canvas {
+  background: #fff;
+  border: 1px solid #e0e4ff;
+  border-radius: 10px;
+}
+
+#threejs-canvas {
+  border: 1px solid #e0e4ff;
+  border-radius: 10px;
+}
 </style>
 </head>
-<body>
 
+<body>
 <header>
-  <h1>🎲 数学乐园 · 骰子专题 · math-practice_0002</h1>
-  <small>学生练习页面 · 1+3 风格 · 多解法解析 · 立体图旋转动画 · 成长图谱</small>
+  <h1>🎲 数学乐园 · 骰子专题</h1>
+  <small>math-practice_0002 · 自动成长题库 · 16 大级别</small>
 </header>
 
 <main>
-
+<!-- ===========================
+     当前题目
+     =========================== -->
 <section class="panel">
   <h2>当前题目</h2>
-  <div id="problem-meta" class="meta"></div>
-  <div id="problem-statement" class="statement"></div>
-  <div class="answer-row">
-    <label>你的答案：</label>
-    <input type="text" id="answer-input" />
-    <button class="primary" onclick="submitAnswer()">提交答案</button>
-    <button class="secondary" onclick="showExplain()">不会？点我讲解</button>
-    <span id="answer-result" class="answer-result"></span>
+  <div class="meta-line" id="problem-meta"></div>
+  <div class="problem-statement" id="problem-statement"></div>
+
+  <div class="input-row">
+    <label for="answer-input">你的答案：</label>
+    <input type="number" id="answer-input" />
+    <button class="primary" id="btn-submit">提交</button>
+    <button class="secondary" id="btn-next">下一题</button>
+    <button class="secondary" id="btn-explain">不会？点我讲解</button>
+  </div>
+
+  <div id="result-msg"></div>
+</section>
+
+<!-- ===========================
+     题目解析（多解法卡片）
+     =========================== -->
+<section class="panel">
+  <h2>题目解析</h2>
+  <div id="explain-panel">点击“不会？点我讲解”查看详细解析。</div>
+</section>
+
+<!-- ===========================
+     动画区（卡通 + 3D）
+     =========================== -->
+<section class="panel" id="animation-panel">
+  <h3>立体图 & 动画推理</h3>
+
+  <div class="input-row">
+    <button class="secondary" id="btn-cartoon">播放卡通立体动画</button>
+    <button class="secondary" id="btn-3d">播放真实 3D 动画</button>
+  </div>
+
+  <!-- 卡通立体骰子 -->
+  <div id="cartoon-panel" style="display:none;">
+    <canvas id="cartoon-canvas" width="260" height="200"></canvas>
+    <div class="input-row">
+      <button class="secondary" id="btn-cartoon-play">播放路径动画</button>
+      <button class="secondary" id="btn-cartoon-reset">重置立体图</button>
+    </div>
+  </div>
+
+  <!-- Three.js 真实 3D 骰子 -->
+  <div id="threejs-panel" style="display:none;">
+    <div id="threejs-canvas" style="width:260px;height:200px;background:#fff;border-radius:8px;"></div>
+    <div class="input-row">
+      <button class="secondary" id="btn-3d-play">播放 3D 动画</button>
+      <button class="secondary" id="btn-3d-reset">重置 3D 骰子</button>
+    </div>
   </div>
 </section>
 
-<div class="layout">
+<!-- ===========================
+     学习进度与成长图谱
+     =========================== -->
+<section class="panel">
+  <h2>学习进度与成长图谱</h2>
 
-  <section class="panel">
-    <h2>题目解析 · 多解法视角</h2>
-    <div id="solution-panels"></div>
-
-    <div id="animation-area" style="margin-top:12px; display:none;">
-      <h3>立体图 · 第二种解法动画</h3>
-      <canvas id="dice-canvas" width="260" height="200" style="border:1px solid #ddd;border-radius:8px;"></canvas>
-      <br>
-      <button class="secondary" onclick="playDicePathAnimation()">播放路径动画</button>
-      <button class="secondary" onclick="resetDiceView()">重置立体图</button>
-    </div>
-
-    <div id="threejs-area" style="margin-top:12px; display:none;">
-      <h3>3D 骰子模型（占位）</h3>
-      <div id="dice-3d" style="width:260px;height:200px;border:1px solid #ddd;border-radius:8px;"></div>
-      <button class="secondary" onclick="initDice3D()">初始化 3D 骰子</button>
-      <button class="secondary" onclick="animateDice3DPath(['R','R','F'])">播放 3D 路径动画</button>
-    </div>
-  </section>
-
-  <section class="panel">
-    <h2>学习进度与成长图谱</h2>
-    <div class="right-panel-row">
+  <div class="level-select-row">
+    <div>
       <label>选择大级别：</label>
-      <select id="level-select"></select>
+      <select id="select-level"></select>
     </div>
-    <div class="right-panel-row">
-      <label>选择子级别：</label>
-      <select id="sublevel-select"></select>
-      <button class="secondary" onclick="jumpToSelectedSubLevel()">跳到该级别出题</button>
-    </div>
-    <div class="right-panel-row">
-      <button class="secondary" onclick="resetStats()">重置统计</button>
-    </div>
-    <div id="stats-area"></div>
-    <canvas id="growth-canvas" width="260" height="180" style="border:1px solid #ddd;border-radius:8px;"></canvas>
-  </section>
 
-</div>
+    <div>
+      <label>选择子级别：</label>
+      <select id="select-sublevel"></select>
+    </div>
+
+    <button class="secondary" id="btn-jump">跳到该级别出题</button>
+    <button class="danger" id="btn-reset">重置统计</button>
+  </div>
+
+  <div class="meta-line" id="stats-summary"></div>
+  <div id="growth-chart"></div>
+</section>
 
 </main>
 
+
+
+<!-- ===========================
+     JS（题库引擎 + 多解法 + 动画）
+     =========================== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
 <script>
-// ========== 题库加载 ==========
-let diceData = null;
-let currentLevelIndex = 0;
-let currentSubLevelIndex = 0;
-let currentProblemIndex = 0;
+/* ===========================
+   DiceTopicEngine · 骰子专题题库
+   =========================== */
+
+class DiceTopicEngine {
+  constructor() {
+    this.data = {
+      levels: this.buildLevels()
+    };
+  }
+
+  buildLevels() {
+    const levels = [];
+    for (let L = 1; L <= 16; L++) {
+      levels.push({
+        levelId: L,
+        levelName: `第 ${L} 大级别`,
+        subLevels: this.buildSubLevels(L)
+      });
+    }
+    return levels;
+  }
+
+  buildSubLevels(levelId) {
+    const subs = [];
+    for (let S = 1; S <= 3; S++) {
+      subs.push({
+        subId: `${levelId}-${S}`,
+        subName: `子级别 ${S}`,
+        problems: this.buildProblems(levelId, S)
+      });
+    }
+    return subs;
+  }
+
+  buildProblems(levelId, subId) {
+    const problems = [];
+    for (let i = 1; i <= 6; i++) {
+      problems.push(this.makeProblem(levelId, subId, i));
+    }
+    return problems;
+  }
+
+  makeProblem(levelId, subId, index) {
+    const a = this.randFace();
+    const b = this.randFace();
+    const c = this.randFace();
+
+    const visibleSum = a + b + c;
+    const hiddenSum = 21 - visibleSum;
+
+    const path = this.randomPath();
+
+    return {
+      id: `${levelId}-${subId}-${index}`,
+      statement: `一个骰子有三个面可见：${a}、${b}、${c}。看不见的三个面的点数和是多少？`,
+      answer: hiddenSum,
+
+      solutions: [
+        {
+          title: "方法一：总和减法",
+          steps: [
+            "一个骰子 1~6 的总和是 21。",
+            `已知三个面的点数和为 ${visibleSum}。`,
+            `看不见的三个面的点数和为 21 - ${visibleSum} = ${hiddenSum}。`
+          ]
+        },
+        {
+          title: "方法二：用相对面和为 7",
+          steps: [
+            "骰子相对面的点数和为 7。",
+            `已知面 ${a} 的对面是 ${7 - a}。`,
+            `已知面 ${b} 的对面是 ${7 - b}。`,
+            `已知面 ${c} 的对面是 ${7 - c}。`,
+            `三个对面点数和为 ${(7 - a) + (7 - b) + (7 - c)}。`
+          ]
+        }
+      ],
+
+      aiExplain: {
+        hintSteps: [
+          "先算出 1~6 的总和。",
+          "再算出已知三个面的点数和。",
+          "用总和减去已知的和。"
+        ],
+        commonMistakes: [
+          "忘记总和是 21。",
+          "把看得见的面也算进看不见的面。",
+          "把相对面和为 7 的规则用错。"
+        ]
+      },
+
+      path
+    };
+  }
+
+  randFace() {
+    return Math.floor(Math.random() * 6) + 1;
+  }
+
+  randomPath() {
+    const moves = ["F", "R"];
+    const len = Math.floor(Math.random() * 3) + 2;
+    const path = [];
+    for (let i = 0; i < len; i++) {
+      path.push(moves[Math.floor(Math.random() * moves.length)]);
+    }
+    return path;
+  }
+}
+
+const engine = new DiceTopicEngine();
 let currentProblem = null;
+let currentStartTime = Date.now();
 
-let stats = { total: 0, correct: 0, wrong: 0 };
+/* ===========================
+   渲染题目
+   =========================== */
+function renderProblem(p) {
+  currentProblem = p;
+  currentStartTime = Date.now();
 
-function loadDiceData() {
-  fetch("https://always001.github.io/math-practice_0002_data.json")
-    .then(res => res.json())
-    .then(json => {
-      diceData = json;
-      initLevelSelectors();
-      loadFirstProblem();
-    })
-    .catch(err => {
-      console.error(err);
-      document.getElementById("problem-statement").textContent =
-        "题库加载失败，请检查 JSON 是否存在。";
-    });
-}
-
-function initLevelSelectors() {
-  const levelSel = document.getElementById("level-select");
-  const subSel = document.getElementById("sublevel-select");
-  levelSel.innerHTML = "";
-  subSel.innerHTML = "";
-
-  diceData.levels.forEach((lvl, idx) => {
-    const opt = document.createElement("option");
-    opt.value = idx;
-    opt.textContent = `Level ${lvl.levelId} · ${lvl.label}`;
-    levelSel.appendChild(opt);
-  });
-
-  levelSel.onchange = () => {
-    currentLevelIndex = parseInt(levelSel.value, 10) || 0;
-    initSubLevelSelector();
-    loadFirstProblem();
-  };
-
-  initSubLevelSelector();
-}
-
-function initSubLevelSelector() {
-  const subSel = document.getElementById("sublevel-select");
-  subSel.innerHTML = "";
-  const level = diceData.levels[currentLevelIndex];
-
-  level.subLevels.forEach((sub, idx) => {
-    const opt = document.createElement("option");
-    opt.value = idx;
-    opt.textContent = `子级别 ${sub.subLevelId} · ${sub.label}`;
-    subSel.appendChild(opt);
-  });
-
-  subSel.onchange = () => {
-    currentSubLevelIndex = parseInt(subSel.value, 10) || 0;
-    loadFirstProblem();
-  };
-}
-
-function jumpToSelectedSubLevel() {
-  currentSubLevelIndex = parseInt(document.getElementById("sublevel-select").value, 10) || 0;
-  loadFirstProblem();
-}
-
-function loadFirstProblem() {
-  currentProblemIndex = 0;
-  showProblemByIndex(currentProblemIndex);
-}
-
-function showProblemByIndex(idx) {
-  const level = diceData.levels[currentLevelIndex];
-  const sub = level.subLevels[currentSubLevelIndex];
-
-  if (!sub || !sub.problems || !sub.problems.length) {
-    document.getElementById("problem-meta").textContent = "";
-    document.getElementById("problem-statement").textContent = "此子级别暂无题目。";
-    document.getElementById("solution-panels").innerHTML = "";
-    document.getElementById("animation-area").style.display = "none";
-    return;
-  }
-
-  currentProblem = sub.problems[idx];
-  if (!currentProblem) return;
-
-  const meta = document.getElementById("problem-meta");
-  meta.textContent =
-    `${level.label} → ${sub.label} · 题号：${currentProblem.id}`;
-
-  document.getElementById("problem-statement").textContent = currentProblem.statement;
+  document.getElementById("problem-meta").textContent = `题号：${p.id}`;
+  document.getElementById("problem-statement").textContent = p.statement;
   document.getElementById("answer-input").value = "";
-  document.getElementById("answer-result").textContent = "";
-
-  renderSolutionPanels(currentProblem);
-  updateStatsUI();
-  drawGrowthGraph();
-
-  if (currentProblem.hasAnimation) {
-    initDiceViewForCurrentProblem(currentProblem);
-  }
+  document.getElementById("result-msg").textContent = "";
+  document.getElementById("explain-panel").textContent = "点击“不会？点我讲解”查看详细解析。";
 }
 
-// ========== 「不会？点我讲解」 ==========
-function showExplain() {
-  const firstContent = document.querySelector("#solution-panels .solution-content");
-  const firstTitle = document.querySelector("#solution-panels .solution-title");
-  if (firstContent && firstTitle) {
-    firstContent.style.display = "block";
-    firstTitle.classList.add("open");
-  }
+/* ===========================
+   记录结果
+   =========================== */
+const userStats = {
+  correct: 0,
+  wrong: 0,
+  levelProgress: {}
+};
+
+function recordResult(problem, isCorrect, timeUsed) {
+  if (isCorrect) userStats.correct++;
+  else userStats.wrong++;
+
+  userStats.levelProgress[problem.id] = {
+    isCorrect,
+    timeUsed
+  };
+
+  updateStatsSummary();
+  renderGrowthChart();
 }
 
-// ========== 答题 ==========
-function submitAnswer() {
-  if (!currentProblem) return;
-  const userAns = document.getElementById("answer-input").value.trim();
-  const correctAns = String(currentProblem.answer).trim();
-
-  stats.total++;
-  if (userAns === correctAns) {
-    stats.correct++;
-    document.getElementById("answer-result").textContent = "✅ 回答正确！";
-  } else {
-    stats.wrong++;
-    document.getElementById("answer-result").textContent =
-      `❌ 回答错误，正确答案是：${correctAns}`;
-  }
-  updateStatsUI();
-  drawGrowthGraph();
+/* ===========================
+   选题逻辑
+   =========================== */
+function pickNextProblem(data, current) {
+  const all = [];
+  data.levels.forEach(level => {
+    level.subLevels.forEach(sub => {
+      sub.problems.forEach(p => all.push(p));
+    });
+  });
+  return all[Math.floor(Math.random() * all.length)];
 }
 
-function resetStats() {
-  stats = { total: 0, correct: 0, wrong: 0 };
-  updateStatsUI();
-  drawGrowthGraph();
+/* ===========================
+   下拉框初始化
+   =========================== */
+function initSelectors() {
+  const selLevel = document.getElementById("select-level");
+  const selSub = document.getElementById("select-sublevel");
+
+  engine.data.levels.forEach(level => {
+    const opt = document.createElement("option");
+    opt.value = level.levelId;
+    opt.textContent = level.levelName;
+    selLevel.appendChild(opt);
+  });
+
+  selLevel.addEventListener("change", () => {
+    selSub.innerHTML = "";
+    const levelId = Number(selLevel.value);
+    const level = engine.data.levels.find(l => l.levelId === levelId);
+
+    level.subLevels.forEach(sub => {
+      const opt = document.createElement("option");
+      opt.value = sub.subId;
+      opt.textContent = sub.subName;
+      selSub.appendChild(opt);
+    });
+  });
+
+  selLevel.value = 1;
+  selLevel.dispatchEvent(new Event("change"));
 }
 
-function updateStatsUI() {
-  const rate = stats.total ? (stats.correct / stats.total * 100).toFixed(1) : 0;
-  document.getElementById("stats-area").textContent =
-    `题目数量：${stats.total}；正确：${stats.correct}；错误：${stats.wrong}；正确率：${rate}%`;
+/* ===========================
+   统计区
+   =========================== */
+function updateStatsSummary() {
+  document.getElementById("stats-summary").textContent =
+    `正确：${userStats.correct}  错误：${userStats.wrong}`;
 }
 
-// ========== 成长图谱 ==========
-function drawGrowthGraph() {
-  const canvas = document.getElementById("growth-canvas");
-  const ctx = canvas.getContext("2d");
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  ctx.strokeStyle = "#ccc";
-  ctx.beginPath();
-  ctx.moveTo(30, 10);
-  ctx.lineTo(30, 160);
-  ctx.lineTo(240, 160);
-  ctx.stroke();
-
-  const rate = stats.total ? stats.correct / stats.total : 0;
-  const y = 160 - rate * 140;
-  ctx.fillStyle = "#4a6cf7";
-  ctx.beginPath();
-  ctx.arc(40, y, 5, 0, Math.PI * 2);
-  ctx.fill();
-
-  ctx.font = "12px system-ui";
-  ctx.fillStyle = "#333";
-  ctx.fillText("正确率", 5, 20);
-  ctx.fillText((rate * 100).toFixed(1) + "%", 50, y - 8);
+function renderGrowthChart() {
+  document.getElementById("growth-chart").textContent =
+    `已完成题目：${Object.keys(userStats.levelProgress).length}`;
 }
 
-// ========== 解析折叠面板 ==========
-function renderSolutionPanels(problem) {
-  const box = document.getElementById("solution-panels");
-  box.innerHTML = "";
-
-  if (!problem.solutions || !problem.solutions.length) {
-    box.innerHTML = "<p>（此题暂无解析）</p>";
-    document.getElementById("animation-area").style.display = "none";
-    document.getElementById("threejs-area").style.display = "none";
+/* ===========================
+   多解法卡片渲染
+   =========================== */
+function renderExplain(problem) {
+  const panel = document.getElementById("explain-panel");
+  if (!problem) {
+    panel.textContent = "当前没有题目。";
     return;
   }
 
-  let hasSecondAnimationSolution = false;
+  let html = "";
 
-  problem.solutions.forEach((sol, idx) => {
-    const panel = document.createElement("div");
-    panel.className = "solution-panel";
+  if (problem.aiExplain.hintSteps?.length) {
+    html += `
+      <div class="explain-block">
+        <div class="explain-block-title">思路提示</div>
+        <ol>${problem.aiExplain.hintSteps.map(s => `<li>${s}</li>`).join("")}</ol>
+      </div>
+    `;
+  }
 
-    const title = document.createElement("div");
-    title.className = "solution-title";
-    title.textContent = sol.method || `方法 ${idx + 1}`;
-
-    const content = document.createElement("div");
-    content.className = "solution-content";
-    content.style.display = "none";
-
-    (sol.steps || []).forEach(step => {
-      const p = document.createElement("p");
-      p.textContent = "• " + step;
-      content.appendChild(p);
+  if (problem.solutions?.length) {
+    html += `<div class="explain-block"><div class="explain-block-title">多种解法</div>`;
+    problem.solutions.forEach((sol, idx) => {
+      html += `
+        <div class="solution-card" data-sol="${idx}">
+          <div class="solution-header">
+            <span class="solution-title">${sol.title}</span>
+            <button class="solution-toggle">展开/收起</button>
+          </div>
+          <ol class="solution-content">${sol.steps.map(s => `<li>${s}</li>`).join("")}</ol>
+        </div>
+      `;
     });
+    html += `</div>`;
+  }
 
-    title.onclick = () => {
-      const isHidden = content.style.display === "none";
-      content.style.display = isHidden ? "block" : "none";
-      title.classList.toggle("open", isHidden);
+  if (problem.aiExplain.commonMistakes?.length) {
+    html += `
+      <div class="explain-block">
+        <div class="explain-block-title">常见错误</div>
+        <ul>${problem.aiExplain.commonMistakes.map(m => `<li>${m}</li>`).join("")}</ul>
+      </div>
+    `;
+  }
 
-      if (idx === 1 && problem.hasAnimation) {
-        document.getElementById("animation-area").style.display = "block";
-        initDiceViewForCurrentProblem(problem);
+  panel.innerHTML = html;
+
+  panel.querySelectorAll(".solution-card").forEach((card, idx) => {
+    const btn = card.querySelector(".solution-toggle");
+    const content = card.querySelector(".solution-content");
+
+    if (idx !== 0) content.style.display = "none";
+
+    btn.onclick = () => {
+      const open = content.style.display === "block";
+      content.style.display = open ? "none" : "block";
+
+      if (idx === 1) {
+        document.getElementById("animation-panel").scrollIntoView({ behavior: "smooth" });
       }
     };
-
-    panel.appendChild(title);
-    panel.appendChild(content);
-    box.appendChild(panel);
-
-    if (idx === 1 && problem.hasAnimation) {
-      hasSecondAnimationSolution = true;
-    }
   });
-
-  document.getElementById("animation-area").style.display =
-    hasSecondAnimationSolution ? "block" : "none";
-
-  const threeArea = document.getElementById("threejs-area");
-  threeArea.style.display = problem.has3D ? "block" : "none";
 }
 
-// ========== Canvas 立体图 ==========
-function getDiceCanvasCtx() {
-  const canvas = document.getElementById("dice-canvas");
-  if (!canvas) return null;
-  return canvas.getContext("2d");
-}
+/* ===========================
+   高级卡通立体骰子动画（升级版）
+   =========================== */
 
-function drawDiceStatic(ctx, state) {
-  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+let cartoonState = { top: 1, front: 2, right: 3 };
 
-  const front = state.front || 2;
-  const right = state.right || 3;
-  const top   = state.top   || 1;
+/* 每个数字对应圆点布局 */
+const dotMap = {
+  1: [[0,0]],
+  2: [[-1,-1],[1,1]],
+  3: [[-1,-1],[0,0],[1,1]],
+  4: [[-1,-1],[-1,1],[1,-1],[1,1]],
+  5: [[-1,-1],[-1,1],[0,0],[1,-1],[1,1]],
+  6: [[-1,-1],[-1,0],[-1,1],[1,-1],[1,0],[1,1]]
+};
 
-  ctx.font = "14px system-ui";
+/* 在一个面上画圆点 */
+function drawDots(ctx, centerX, centerY, w, h, num) {
+  const dots = dotMap[num];
   ctx.fillStyle = "#333";
-  ctx.strokeStyle = "#555";
-
-  ctx.strokeRect(40, 80, 60, 60);
-  ctx.fillText(front, 68, 115);
-  ctx.fillText("前面", 52, 150);
-
-  ctx.strokeRect(110, 80, 60, 60);
-  ctx.fillText(right, 138, 115);
-  ctx.fillText("右侧", 122, 150);
-
-  ctx.strokeRect(75, 30, 60, 60);
-  ctx.fillText(top, 103, 65);
-  ctx.fillText("顶部", 87, 25);
+  dots.forEach(([dx, dy]) => {
+    ctx.beginPath();
+    ctx.arc(centerX + dx * (w/4), centerY + dy * (h/4), 6, 0, Math.PI*2);
+    ctx.fill();
+  });
 }
 
-function initDiceViewForCurrentProblem(problem) {
-  const ctx = getDiceCanvasCtx();
-  if (!ctx) return;
-  const top   = problem.initialTop   || 1;
-  const front = problem.initialFront || 2;
-  const right = problem.initialRight || 3;
-  drawDiceStatic(ctx, { top, front, right });
+/* 画高级立体骰子 */
+function drawCartoonDice(ctx, s) {
+  ctx.clearRect(0, 0, 260, 200);
+
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = "#444";
+
+  // 顶面四点（斜视）
+  const A = { x: 80,  y: 40 };
+  const B = { x: 150, y: 60 };
+  const C = { x: 120, y: 95 };
+  const D = { x: 50,  y: 75 };
+
+  // 前面
+  const F1 = D;
+  const F2 = C;
+  const F3 = { x: C.x, y: C.y + 70 };
+  const F4 = { x: D.x, y: D.y + 70 };
+
+  // 右侧面
+  const R1 = C;
+  const R2 = B;
+  const R3 = { x: B.x, y: B.y + 70 };
+  const R4 = { x: C.x, y: C.y + 70 };
+
+  /* 顶面 */
+  ctx.fillStyle = "#fff7d1";
+  ctx.beginPath();
+  ctx.moveTo(A.x, A.y);
+  ctx.lineTo(B.x, B.y);
+  ctx.lineTo(C.x, C.y);
+  ctx.lineTo(D.x, D.y);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  drawDots(ctx, 100, 65, 70, 40, s.top);
+
+  /* 前面 */
+  ctx.fillStyle = "#ffe4b5";
+  ctx.beginPath();
+  ctx.moveTo(F1.x, F1.y);
+  ctx.lineTo(F2.x, F2.y);
+  ctx.lineTo(F3.x, F3.y);
+  ctx.lineTo(F4.x, F4.y);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  drawDots(ctx, F1.x + 30, F1.y + 45, 70, 70, s.front);
+
+  /* 右侧面 */
+  ctx.fillStyle = "#ffd1dc";
+  ctx.beginPath();
+  ctx.moveTo(R1.x, R1.y);
+  ctx.lineTo(R2.x, R2.y);
+  ctx.lineTo(R3.x, R3.y);
+  ctx.lineTo(R4.x, R4.y);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  drawDots(ctx, R1.x + 25, R1.y + 45, 70, 70, s.right);
+
+  /* 阴影 */
+  ctx.fillStyle = "rgba(0,0,0,0.15)";
+  ctx.beginPath();
+  ctx.moveTo(F4.x, F4.y + 5);
+  ctx.lineTo(F3.x + 10, F3.y + 5);
+  ctx.lineTo(R3.x + 10, R3.y + 5);
+  ctx.lineTo(R4.x, R4.y + 5);
+  ctx.closePath();
+  ctx.fill();
 }
 
-function playDicePathAnimation() {
-  const ctx = getDiceCanvasCtx();
-  if (!ctx || !currentProblem) return;
+/* 滚动逻辑保持不变 */
+function cartoonRollFront(s) {
+  return { top: s.front, front: 7 - s.top, right: s.right };
+}
 
-  let state = {
-    top: currentProblem.initialTop   || 1,
-    front: currentProblem.initialFront || 2,
-    right: currentProblem.initialRight || 3
-  };
+function cartoonRollRight(s) {
+  return { top: s.right, front: s.front, right: 7 - s.top };
+}
 
-  const path = currentProblem.path || ["右", "右", "前"];
-  let stepIndex = 0;
+function playCartoonPath(path) {
+  const canvas = document.getElementById("cartoon-canvas");
+  const ctx = canvas.getContext("2d");
 
-  drawDiceStatic(ctx, state);
+  let step = 0;
+  let s = { ...cartoonState };
+  drawCartoonDice(ctx, s);
 
   const timer = setInterval(() => {
-    if (stepIndex >= path.length) {
+    if (step >= path.length) {
       clearInterval(timer);
       return;
     }
 
-    const move = path[stepIndex];
+    const move = path[step];
+    if (move === "前" || move === "F") s = cartoonRollFront(s);
+    if (move === "右" || move === "R") s = cartoonRollRight(s);
 
-    if (move === "右" || move === "R") {
-      const newTop   = state.right;
-      const newRight = 7 - state.top;
-      const newFront = state.front;
-      state = { top: newTop, front: newFront, right: newRight };
-    } else if (move === "前" || move === "F") {
-      const newTop   = state.front;
-      const newFront = 7 - state.top;
-      const newRight = state.right;
-      state = { top: newTop, front: newFront, right: newRight };
-    }
-
-    drawDiceStatic(ctx, state);
-    stepIndex++;
+    drawCartoonDice(ctx, s);
+    step++;
   }, 800);
 }
 
-function resetDiceView() {
-  const ctx = getDiceCanvasCtx();
-  if (!ctx || !currentProblem) return;
-  const top   = currentProblem.initialTop   || 1;
-  const front = currentProblem.initialFront || 2;
-  const right = currentProblem.initialRight || 3;
-  drawDiceStatic(ctx, { top, front, right });
+function resetCartoon() {
+  cartoonState = { top: 1, front: 2, right: 3 };
+  const ctx = document.getElementById("cartoon-canvas").getContext("2d");
+  drawCartoonDice(ctx, cartoonState);
 }
 
-// ========== Three.js 占位 ==========
-function initDice3D() {
-  console.log("TODO: 初始化 Three.js 3D 骰子模型");
+
+/* ===========================
+   Three.js 真实 3D 骰子动画
+   =========================== */
+let scene3d, camera3d, renderer3d, cube3d;
+
+function init3D() {
+  scene3d = new THREE.Scene();
+  camera3d = new THREE.PerspectiveCamera(45, 260/200, 0.1, 1000);
+  renderer3d = new THREE.WebGLRenderer({ antialias: true });
+  renderer3d.setSize(260, 200);
+
+  document.getElementById("threejs-canvas").innerHTML = "";
+  document.getElementById("threejs-canvas").appendChild(renderer3d.domElement);
+
+  const geometry = new THREE.BoxGeometry(1, 1, 1);
+  const materials = [
+    new THREE.MeshBasicMaterial({ color: "#ff9999" }),
+    new THREE.MeshBasicMaterial({ color: "#99ff99" }),
+    new THREE.MeshBasicMaterial({ color: "#9999ff" }),
+    new THREE.MeshBasicMaterial({ color: "#ffff99" }),
+    new THREE.MeshBasicMaterial({ color: "#ff99ff" }),
+    new THREE.MeshBasicMaterial({ color: "#99ffff" })
+  ];
+
+  cube3d = new THREE.Mesh(geometry, materials);
+  scene3d.add(cube3d);
+
+  camera3d.position.z = 3;
+  renderer3d.render(scene3d, camera3d);
 }
 
-function animateDice3DPath(path) {
-  console.log("TODO: 根据路径做 3D 动画", path);
+function play3DPath(path) {
+  let step = 0;
+
+  const timer = setInterval(() => {
+    if (step >= path.length) {
+      clearInterval(timer);
+      return;
+    }
+
+    const move = path[step];
+    if (move === "前" || move === "F") cube3d.rotation.x += Math.PI / 2;
+    if (move === "右" || move === "R") cube3d.rotation.y += Math.PI / 2;
+
+    renderer3d.render(scene3d, camera3d);
+    step++;
+  }, 800);
 }
 
-// ========== 初始化 ==========
-window.onload = loadDiceData;
+function reset3D() {
+  cube3d.rotation.set(0, 0, 0);
+  renderer3d.render(scene3d, camera3d);
+}
+
+/* ===========================
+   动画按钮切换
+   =========================== */
+document.getElementById("btn-cartoon").onclick = () => {
+  document.getElementById("cartoon-panel").style.display = "block";
+  document.getElementById("threejs-panel").style.display = "none";
+  resetCartoon();
+};
+
+document.getElementById("btn-3d").onclick = () => {
+  document.getElementById("cartoon-panel").style.display = "none";
+  document.getElementById("threejs-panel").style.display = "block";
+  init3D();
+};
+
+document.getElementById("btn-cartoon-play").onclick = () => {
+  if (!currentProblem || !currentProblem.path) return;
+  playCartoonPath(currentProblem.path);
+};
+
+document.getElementById("btn-cartoon-reset").onclick = resetCartoon;
+
+document.getElementById("btn-3d-play").onclick = () => {
+  if (!currentProblem || !currentProblem.path) return;
+  play3DPath(currentProblem.path);
+};
+
+document.getElementById("btn-3d-reset").onclick = reset3D;
+/* ===========================
+   事件绑定（按钮逻辑）
+   =========================== */
+
+document.getElementById("btn-submit").addEventListener("click", () => {
+  if (!currentProblem) return;
+  const val = document.getElementById("answer-input").value;
+  if (val === "") {
+    document.getElementById("result-msg").textContent = "请先输入你的答案。";
+    return;
+  }
+  const num = Number(val);
+  const isCorrect = (num === currentProblem.answer);
+  const timeUsed = Date.now() - currentStartTime;
+  recordResult(currentProblem, isCorrect, timeUsed);
+  document.getElementById("result-msg").textContent =
+    isCorrect ? "✅ 回答正确！" : `❌ 回答错误，正确答案是：${currentProblem.answer}`;
+});
+
+document.getElementById("btn-next").addEventListener("click", () => {
+  const next = pickNextProblem(engine.data, currentProblem);
+  renderProblem(next);
+});
+
+document.getElementById("btn-explain").addEventListener("click", () => {
+  renderExplain(currentProblem);
+});
+
+document.getElementById("btn-jump").addEventListener("click", () => {
+  const levelId = Number(document.getElementById("select-level").value);
+  const subId = document.getElementById("select-sublevel").value;
+  const level = engine.data.levels.find(l => l.levelId === levelId);
+  const sub = level.subLevels.find(s => s.subId === subId);
+  const p = sub.problems[Math.floor(Math.random() * sub.problems.length)];
+  renderProblem(p);
+});
+
+document.getElementById("btn-reset").addEventListener("click", () => {
+  userStats.correct = 0;
+  userStats.wrong = 0;
+  userStats.levelProgress = {};
+  updateStatsSummary();
+  renderGrowthChart();
+  document.getElementById("result-msg").textContent = "统计已重置。";
+});
+
+/* ===========================
+   初始化
+   =========================== */
+
+initSelectors();
+updateStatsSummary();
+renderGrowthChart();
+
+/* ===========================
+   初始随机一题（页面一打开就有题目）
+   =========================== */
+
+const allProblemsInit = [];
+engine.data.levels.forEach(level => {
+  level.subLevels.forEach(sub => {
+    sub.problems.forEach(p => allProblemsInit.push(p));
+  });
+});
+renderProblem(allProblemsInit[Math.floor(Math.random() * allProblemsInit.length)]);
 </script>
-
 </body>
 </html>
