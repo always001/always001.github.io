@@ -3,104 +3,497 @@
     "id": "math-practice_0002",
     "title": "🎲 骰子数学专题",
     "version": "1.0.0",
-    "totalProblems": 1000
+    "totalProblems": 16
   },
   "levels": [
     {
       "levelId": 1,
       "label": "Level 1 · 认识骰子点数",
       "gradeHint": "小学一年级",
-      "subLevels": []
+      "subLevels": [
+        {
+          "subLevelId": 1,
+          "label": "基础认识",
+          "problems": [
+            {
+              "id": 1,
+              "statement": "骰子顶部是 1，前面是 2，右侧是 3，问左侧是多少？",
+              "answer": "4",
+              "solutions": [
+                {
+                  "method": "观察法",
+                  "steps": [
+                    "标准骰子对面和为 7。",
+                    "右侧是 3 → 左侧是 4。"
+                  ]
+                }
+              ],
+              "hasAnimation": true,
+              "has3D": false,
+              "initialTop": 1,
+              "initialFront": 2,
+              "initialRight": 3,
+              "path": ["右", "前"]
+            }
+          ]
+        }
+      ]
     },
+
     {
       "levelId": 2,
       "label": "Level 2 · 判断骰子是否正确",
       "gradeHint": "小学二年级",
-      "subLevels": []
+      "subLevels": [
+        {
+          "subLevelId": 1,
+          "label": "正确性判断",
+          "problems": [
+            {
+              "id": 2,
+              "statement": "一个骰子显示顶部 1、前面 6，这是否可能？",
+              "answer": "否",
+              "solutions": [
+                {
+                  "method": "对面判断",
+                  "steps": [
+                    "标准骰子对面和为 7。",
+                    "1 的对面是 6。",
+                    "顶部是 1 → 前面不能是 6。"
+                  ]
+                }
+              ],
+              "hasAnimation": false,
+              "has3D": false
+            }
+          ]
+        }
+      ]
     },
+
     {
       "levelId": 3,
       "label": "Level 3 · 相邻贴面和为 8",
       "gradeHint": "小学三年级",
-      "subLevels": []
+      "subLevels": [
+        {
+          "subLevelId": 1,
+          "label": "贴面判断",
+          "problems": [
+            {
+              "id": 3,
+              "statement": "一个骰子相邻两面点数和为 8，可能是哪两面？",
+              "answer": "3 和 5",
+              "solutions": [
+                {
+                  "method": "枚举法",
+                  "steps": [
+                    "标准骰子相邻面组合：1-2, 1-3, 1-4, 1-5, 2-3, 2-4, 2-6, 3-4, 3-5, 4-5, 4-6, 5-6。",
+                    "其中和为 8 的只有 3 和 5。"
+                  ]
+                }
+              ],
+              "hasAnimation": false,
+              "has3D": false
+            }
+          ]
+        }
+      ]
     },
+
     {
       "levelId": 4,
       "label": "Level 4 · 多骰子链式推理",
       "gradeHint": "小学四年级",
-      "subLevels": []
+      "subLevels": [
+        {
+          "subLevelId": 1,
+          "label": "链式推理",
+          "problems": [
+            {
+              "id": 4,
+              "statement": "两个骰子相邻贴合，左骰子右侧为 3，右骰子左侧是多少？",
+              "answer": "3",
+              "solutions": [
+                {
+                  "method": "贴合面一致",
+                  "steps": [
+                    "两个骰子贴合 → 接触面点数相同。",
+                    "左骰子右侧是 3 → 右骰子左侧也是 3。"
+                  ]
+                }
+              ],
+              "hasAnimation": false,
+              "has3D": false
+            }
+          ]
+        }
+      ]
     },
+
     {
       "levelId": 5,
       "label": "Level 5 · 空间方位与面推理",
       "gradeHint": "小学五年级",
-      "subLevels": []
+      "subLevels": [
+        {
+          "subLevelId": 1,
+          "label": "空间方位",
+          "problems": [
+            {
+              "id": 5,
+              "statement": "骰子顶部是 2，右侧是 6，问前面是多少？",
+              "answer": "3",
+              "solutions": [
+                {
+                  "method": "旋转推理",
+                  "steps": [
+                    "顶部 2 → 底部 5。",
+                    "右侧 6 → 左侧 1。",
+                    "剩余前后为 3 和 4。",
+                    "根据标准布局 → 前面是 3。"
+                  ]
+                }
+              ],
+              "hasAnimation": true,
+              "initialTop": 2,
+              "initialFront": 3,
+              "initialRight": 6
+            }
+          ]
+        }
+      ]
     },
+
     {
       "levelId": 6,
       "label": "Level 6 · 多骰子空间组合",
       "gradeHint": "小学六年级",
-      "subLevels": []
+      "subLevels": [
+        {
+          "subLevelId": 1,
+          "label": "组合推理",
+          "problems": [
+            {
+              "id": 6,
+              "statement": "三个骰子排成一排，中间骰子左侧为 4，右侧为 2，问顶部是多少？",
+              "answer": "1",
+              "solutions": [
+                {
+                  "method": "对面和为 7",
+                  "steps": [
+                    "左侧 4 → 右侧 3。",
+                    "右侧 2 → 左侧 5。",
+                    "综合推理 → 顶部为 1。"
+                  ]
+                }
+              ],
+              "hasAnimation": false
+            }
+          ]
+        }
+      ]
     },
+
     {
       "levelId": 7,
       "label": "Level 7 · 单步旋转与滚动",
       "gradeHint": "初一",
-      "subLevels": []
+      "subLevels": [
+        {
+          "subLevelId": 1,
+          "label": "单步滚动",
+          "problems": [
+            {
+              "id": 7,
+              "statement": "骰子顶部 1，前面 2，右侧 3，向右滚动一步后顶部是多少？",
+              "answer": "3",
+              "solutions": [
+                {
+                  "method": "右滚规则",
+                  "steps": [
+                    "右滚：顶部变右侧。",
+                    "右侧是 3 → 新顶部是 3。"
+                  ]
+                }
+              ],
+              "hasAnimation": true,
+              "initialTop": 1,
+              "initialFront": 2,
+              "initialRight": 3,
+              "path": ["右"]
+            }
+          ]
+        }
+      ]
     },
+
     {
       "levelId": 8,
       "label": "Level 8 · 多步旋转与路径",
       "gradeHint": "初二",
-      "subLevels": []
+      "subLevels": [
+        {
+          "subLevelId": 1,
+          "label": "多步路径",
+          "problems": [
+            {
+              "id": 8,
+              "statement": "骰子按路径 R, F, R 滚动，初始顶部 1，前面 2，右侧 3，最终顶部是多少？",
+              "answer": "2",
+              "solutions": [
+                {
+                  "method": "逐步模拟",
+                  "steps": [
+                    "右滚：顶部变右侧 → 3。",
+                    "前滚：顶部变前面 → 2。",
+                    "右滚：顶部变右侧 → 2。"
+                  ]
+                }
+              ],
+              "hasAnimation": true,
+              "initialTop": 1,
+              "initialFront": 2,
+              "initialRight": 3,
+              "path": ["R", "F", "R"]
+            }
+          ]
+        }
+      ]
     },
+
     {
       "levelId": 9,
       "label": "Level 9 · 三维坐标与滚动路径",
       "gradeHint": "初三",
-      "subLevels": []
+      "subLevels": [
+        {
+          "subLevelId": 1,
+          "label": "坐标路径",
+          "problems": [
+            {
+              "id": 9,
+              "statement": "骰子沿坐标路径 F, F, R 滚动，最终顶部是多少？",
+              "answer": "5",
+              "solutions": [
+                {
+                  "method": "路径模拟",
+                  "steps": [
+                    "按路径逐步模拟即可。"
+                  ]
+                }
+              ],
+              "hasAnimation": true,
+              "initialTop": 1,
+              "initialFront": 2,
+              "initialRight": 3,
+              "path": ["F", "F", "R"]
+            }
+          ]
+        }
+      ]
     },
+
     {
       "levelId": 10,
       "label": "Level 10 · 展开图与折叠",
       "gradeHint": "高一",
-      "subLevels": []
+      "subLevels": [
+        {
+          "subLevelId": 1,
+          "label": "展开图",
+          "problems": [
+            {
+              "id": 10,
+              "statement": "标准骰子展开图中，1 的右侧是哪一面？",
+              "answer": "3",
+              "solutions": [
+                {
+                  "method": "记忆布局",
+                  "steps": [
+                    "标准布局：1 的右侧是 3。"
+                  ]
+                }
+              ],
+              "hasAnimation": false
+            }
+          ]
+        }
+      ]
     },
+
     {
       "levelId": 11,
       "label": "Level 11 · 立方体旋转群基础",
       "gradeHint": "高二",
-      "subLevels": []
+      "subLevels": [
+        {
+          "subLevelId": 1,
+          "label": "旋转群",
+          "problems": [
+            {
+              "id": 11,
+              "statement": "骰子旋转群中，顶部 1 可以旋转到多少个不同位置？",
+              "answer": "6",
+              "solutions": [
+                {
+                  "method": "群作用",
+                  "steps": [
+                    "立方体有 24 种旋转。",
+                    "顶部可以到 6 个不同面。"
+                  ]
+                }
+              ],
+              "hasAnimation": false
+            }
+          ]
+        }
+      ]
     },
+
     {
       "levelId": 12,
       "label": "Level 12 · 组合计数与可见面",
       "gradeHint": "高三",
-      "subLevels": []
+      "subLevels": [
+        {
+          "subLevelId": 1,
+          "label": "可见面",
+          "problems": [
+            {
+              "id": 12,
+              "statement": "一个骰子放在桌面上，有多少个面可见？",
+              "answer": "5",
+              "solutions": [
+                {
+                  "method": "空间观察",
+                  "steps": [
+                    "底面不可见。",
+                    "剩余 5 面可见。"
+                  ]
+                }
+              ],
+              "hasAnimation": false
+            }
+          ]
+        }
+      ]
     },
+
     {
       "levelId": 13,
       "label": "Level 13 · 群作用与轨道",
       "gradeHint": "大一",
-      "subLevels": []
+      "subLevels": [
+        {
+          "subLevelId": 1,
+          "label": "轨道",
+          "problems": [
+            {
+              "id": 13,
+              "statement": "骰子顶部为 1 时，前面可以是哪些面？",
+              "answer": "2,3,4,5",
+              "solutions": [
+                {
+                  "method": "轨道分析",
+                  "steps": [
+                    "顶部固定 → 前面可以是四个侧面。"
+                  ]
+                }
+              ],
+              "hasAnimation": false
+            }
+          ]
+        }
+      ]
     },
+
     {
       "levelId": 14,
       "label": "Level 14 · 图论视角的骰子邻接图",
       "gradeHint": "大二",
-      "subLevels": []
+      "subLevels": [
+        {
+          "subLevelId": 1,
+          "label": "邻接图",
+          "problems": [
+            {
+              "id": 14,
+              "statement": "骰子 1 的邻接面有哪些？",
+              "answer": "2,3,4,5",
+              "solutions": [
+                {
+                  "method": "邻接图",
+                  "steps": [
+                    "标准布局：1 的邻接面是 2,3,4,5。"
+                  ]
+                }
+              ],
+              "hasAnimation": false
+            }
+          ]
+        }
+      ]
     },
+
     {
       "levelId": 15,
       "label": "Level 15 · 立方体旋转群 ≅ S₄",
       "gradeHint": "大三",
-      "subLevels": []
+      "subLevels": [
+        {
+          "subLevelId": 1,
+          "label": "群同构",
+          "problems": [
+            {
+              "id": 15,
+              "statement": "立方体旋转群与 S₄ 同构的原因是什么？",
+              "answer": "因为作用于四条空间对角线",
+              "solutions": [
+                {
+                  "method": "群论",
+                  "steps": [
+                    "立方体有四条空间对角线。",
+                    "旋转群作用于这四条对角线。",
+                    "因此同构于 S₄。"
+                  ]
+                }
+              ],
+              "hasAnimation": false
+            }
+          ]
+        }
+      ]
     },
+
     {
       "levelId": 16,
       "label": "Level 16 · 马尔可夫链与稳态分布",
       "gradeHint": "大四",
-      "subLevels": []
+      "subLevels": [
+        {
+          "subLevelId": 1,
+          "label": "稳态分布",
+          "problems": [
+            {
+              "id": 16,
+              "statement": "骰子随机滚动，长期来看每个面出现的概率是多少？",
+              "answer": "1/6",
+              "solutions": [
+                {
+                  "method": "稳态分布",
+                  "steps": [
+                    "随机滚动是均匀马尔可夫链。",
+                    "稳态分布为均匀分布。",
+                    "每面概率为 1/6。"
+                  ]
+                }
+              ],
+              "hasAnimation": false
+            }
+          ]
+        }
+      ]
     }
   ]
 }

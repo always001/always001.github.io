@@ -97,12 +97,10 @@
       <br>
       <button class="secondary" onclick="playDicePathAnimation()">播放路径动画</button>
       <button class="secondary" onclick="resetDiceView()">重置立体图</button>
-      <button class="secondary" onclick="exportGifPlaceholder()">生成题目 GIF（占位）</button>
-      <button class="secondary" onclick="exportWebMPlaceholder()">生成讲解视频 WebM（占位）</button>
     </div>
 
     <div id="threejs-area" style="margin-top:12px; display:none;">
-      <h3>3D 骰子模型（Three.js 占位）</h3>
+      <h3>3D 骰子模型（占位）</h3>
       <div id="dice-3d" style="width:260px;height:200px;border:1px solid #ddd;"></div>
       <button class="secondary" onclick="initDice3D()">初始化 3D 骰子</button>
       <button class="secondary" onclick="animateDice3DPath(['R','R','F'])">播放 3D 路径动画</button>
@@ -139,11 +137,7 @@ let currentSubLevelIndex = 0;
 let currentProblemIndex = 0;
 let currentProblem = null;
 
-let stats = {
-  total: 0,
-  correct: 0,
-  wrong: 0
-};
+let stats = { total: 0, correct: 0, wrong: 0 };
 
 function loadDiceData() {
   fetch("https://always001.github.io/math-practice_0002_data.json")
@@ -156,7 +150,7 @@ function loadDiceData() {
     .catch(err => {
       console.error(err);
       document.getElementById("problem-statement").textContent =
-        "题库加载失败，请检查 math-practice_0002_data.json 是否存在。";
+        "题库加载失败，请检查 JSON 是否存在。";
     });
 }
 
@@ -169,7 +163,7 @@ function initLevelSelectors() {
   diceData.levels.forEach((lvl, idx) => {
     const opt = document.createElement("option");
     opt.value = idx;
-    opt.textContent = `Level ${lvl.level} · ${lvl.name}`;
+    opt.textContent = `Level ${lvl.levelId} · ${lvl.label}`;
     levelSel.appendChild(opt);
   });
 
@@ -190,7 +184,7 @@ function initSubLevelSelector() {
   level.subLevels.forEach((sub, idx) => {
     const opt = document.createElement("option");
     opt.value = idx;
-    opt.textContent = `子级别 ${sub.subLevel} · ${sub.name}`;
+    opt.textContent = `子级别 ${sub.subLevelId} · ${sub.label}`;
     subSel.appendChild(opt);
   });
 
@@ -213,13 +207,18 @@ function loadFirstProblem() {
 function showProblemByIndex(idx) {
   const level = diceData.levels[currentLevelIndex];
   const sub = level.subLevels[currentSubLevelIndex];
+
+  if (!sub || !sub.problems || !sub.problems.length) {
+    document.getElementById("problem-statement").textContent = "此子级别暂无题目。";
+    return;
+  }
+
   currentProblem = sub.problems[idx];
   if (!currentProblem) return;
 
   const meta = document.getElementById("problem-meta");
   meta.textContent =
-    `Level ${level.level} - ${level.name} → ` +
-    `Level ${level.level} - ${sub.name} · 子级别 ${sub.subLevel} · 题号：${currentProblem.id || "未知"}`;
+    `${level.label} → ${sub.label} · 题号：${currentProblem.id}`;
 
   document.getElementById("problem-statement").textContent = currentProblem.statement;
   document.getElementById("answer-input").value = "";
@@ -228,6 +227,10 @@ function showProblemByIndex(idx) {
   renderSolutionPanels(currentProblem);
   updateStatsUI();
   drawGrowthGraph();
+
+  if (currentProblem.hasAnimation) {
+    initDiceViewForCurrentProblem(currentProblem);
+  }
 }
 
 // ========== 答题 ==========
@@ -333,22 +336,13 @@ function renderSolutionPanels(problem) {
   });
 
   const anim = document.getElementById("animation-area");
-  if (problem.hasAnimation) {
-    anim.style.display = "block";
-    initDiceViewForCurrentProblem(problem);
-  } else {
-    anim.style.display = "none";
-  }
+  anim.style.display = problem.hasAnimation ? "block" : "none";
 
   const threeArea = document.getElementById("threejs-area");
-  if (problem.has3D) {
-    threeArea.style.display = "block";
-  } else {
-    threeArea.style.display = "none";
-  }
+  threeArea.style.display = problem.has3D ? "block" : "none";
 }
 
-// ========== Canvas 立体图 & 路径动画 ==========
+// ========== Canvas 立体图 ==========
 function getDiceCanvasCtx() {
   const canvas = document.getElementById("dice-canvas");
   if (!canvas) return null;
@@ -398,7 +392,7 @@ function playDicePathAnimation() {
     right: currentProblem.initialRight || 3
   };
 
-  const path = currentProblem.path || ["右", "右", "前"];
+  const path = currentProblem.path || [];
   let stepIndex = 0;
 
   drawDiceStatic(ctx, state);
@@ -439,20 +433,11 @@ function resetDiceView() {
 
 // ========== Three.js 占位 ==========
 function initDice3D() {
-  console.log("TODO: 在这里初始化 Three.js 3D 骰子模型。");
+  console.log("TODO: 初始化 Three.js 3D 骰子模型");
 }
 
 function animateDice3DPath(path) {
-  console.log("TODO: 在这里根据路径做 3D 旋转动画。", path);
-}
-
-// ========== GIF / WebM 占位 ==========
-function exportGifPlaceholder() {
-  alert("这里是生成 GIF 的占位逻辑：实际可以用 CCapture.js 或后端脚本录制 Canvas。");
-}
-
-function exportWebMPlaceholder() {
-  alert("这里是生成 WebM 讲解视频的占位逻辑：实际可以用 MediaRecorder 或后端工具。");
+  console.log("TODO: 根据路径做 3D 动画", path);
 }
 
 // ========== 初始化 ==========
