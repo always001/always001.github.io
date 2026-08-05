@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>🎲 数学乐园 · 骰子专题 math-practice_0002</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f7fb;
+    }
+    header {
+      background: #4a6cf7;
+      color: #fff;
+      padding: 12px 16px;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+    header small {
+      display: block;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+    main {
+      padding: 12px 16px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .panel {
+      background: #fff;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+    }
+    .panel h2 {
+      margin-top: 0;
+      font-size: 18px;
+    }
+    .panel h3 {
+      margin-top: 0;
+      font-size: 16px;
+    }
+    .meta-line {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 6px;
+    }
+    .problem-statement {
+      font-size: 16px;
+      margin: 8px 0;
+    }
+    .input-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-top: 8px;
+    }
+    .input-row input[type="number"] {
+      width: 80px;
+      padding: 4px 6px;
+      font-size: 16px;
+    }
+    button {
+      padding: 6px 10px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button.primary {
+      background: #4a6cf7;
+      color: #fff;
+    }
+    button.secondary {
+      background: #e0e4ff;
+      color: #333;
+    }
+    button.danger {
+      background: #ff6b6b;
+      color: #fff;
+    }
+    #result-msg {
+      margin-top: 6px;
+      font-size: 14px;
+    }
+    #explain-panel h4 {
+      margin-bottom: 4px;
+    }
+    #explain-panel ol,
+    #explain-panel ul {
+      margin-top: 4px;
+      margin-bottom: 8px;
+      padding-left: 20px;
+    }
+    #growth-chart {
+      width: 100%;
+      height: 200px;
+      background: #f0f3ff;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    .growth-bar {
+      position: absolute;
+      bottom: 0;
+      width: 20px;
+      background: #4a6cf7;
+      border-radius: 4px 4px 0 0;
+    }
+    .growth-label {
+      position: absolute;
+      bottom: 0;
+      font-size: 10px;
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
+    .level-select-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    select {
+      padding: 4px 6px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>🎲 数学乐园 · 骰子专题</h1>
+  <small>math-practice_0002 · 从小学一年级到大学四年级 · 16 大级别 · 自动成长题库</small>
+</header>
+<main>
+  <!-- 当前题目展示 -->
+  <section class="panel">
+    <h2>当前题目</h2>
+    <div class="meta-line" id="problem-meta"></div>
+    <div class="problem-statement" id="problem-statement"></div>
+    <div class="input-row">
+      <label for="answer-input">你的答案：</label>
+      <input type="number" id="answer-input" />
+      <button class="primary" id="btn-submit">提交</button>
+      <button class="secondary" id="btn-next">下一题</button>
+      <button class="secondary" id="btn-explain">不会？点我讲解</button>
+    </div>
+    <div id="result-msg"></div>
+  </section>
+
+  <!-- 解析面板 -->
+  <section class="panel">
+    <h2>题目解析</h2>
+    <div id="explain-panel">点击“不会？点我讲解”查看详细解析。</div>
+  </section>
+
+  <!-- 难度选择 + 成长图谱 -->
+  <section class="panel">
+    <h2>学习进度与成长图谱</h2>
+    <div class="level-select-row">
+      <div>
+        <label>选择大级别：</label>
+        <select id="select-level"></select>
+      </div>
+      <div>
+        <label>选择子级别：</label>
+        <select id="select-sublevel"></select>
+      </div>
+      <button class="secondary" id="btn-jump">跳到该级别出题</button>
+      <button class="danger" id="btn-reset">重置统计</button>
+    </div>
+    <div class="meta-line" id="stats-summary"></div>
+    <div id="growth-chart"></div>
+  </section>
+</main>
+
+<script>
+/**
+ * DiceTopicEngine：自动生成 16 级骰子题库
+ */
+class DiceTopicEngine {
+  constructor(config) {
+    this.config = config;
+    this.data = {
+      meta: {
+        id: "math-practice_0002",
+        title: "🎲 骰子数学专题",
+        version: "1.0.0",
+        totalProblems: 0
+      },
+      levels: []
+    };
+  }
+
+  initLevels() {
+    const levelDefs = [
+      { grade: "小学一年级", name: "认识骰子点数" },
+      { grade: "小学二年级", name: "判断骰子是否正确" },
+      { grade: "小学三年级", name: "相邻贴面和为 8" },
+      { grade: "小学四年级", name: "多骰子链式推理" },
+      { grade: "小学五年级", name: "空间方位与面推理" },
+      { grade: "小学六年级", name: "多骰子空间组合" },
+      { grade: "初一",       name: "单步旋转与滚动" },
+      { grade: "初二",       name: "多步旋转与路径" },
+      { grade: "初三",       name: "三维坐标与滚动路径" },
+      { grade: "高一",       name: "展开图与折叠" },
+      { grade: "高二",       name: "立方体旋转群基础" },
+      { grade: "高三",       name: "组合计数与可见面" },
+      { grade: "大一",       name: "群作用与轨道" },
+      { grade: "大二",       name: "图论视角的骰子邻接图" },
+      { grade: "大三",       name: "立方体旋转群 ≅ S₄" },
+      { grade: "大四",       name: "马尔可夫链与稳态分布" }
+    ];
+
+    levelDefs.forEach((def, idx) => {
+      this.data.levels.push({
+        levelId: idx + 1,
+        label: `Level ${idx + 1} · ${def.name}`,
+        gradeHint: def.grade,
+        subLevels: []
+      });
+    });
+  }
+
+  generateSubLevels() {
+    this.data.levels.forEach(level => {
+      for (let s = 1; s <= this.config.subLevelsPerLevel; s++) {
+        level.subLevels.push({
+          subId: `${level.levelId}-${s}`,
+          name: `${level.label} · 子级别 ${s}`,
+          difficultyStars: s, // 简单用子级别编号当星级
+          problems: []
+        });
+      }
+    });
+  }
+
+  generateProblems() {
+    let count = 0;
+    this.data.levels.forEach(level => {
+      level.subLevels.forEach(sub => {
+        for (let i = 1; i <= this.config.problemsPerSubLevel; i++) {
+          if (count >= this.config.totalProblems) break;
+          const p = this.generateProblem(level.levelId, sub.subId, i);
+          sub.problems.push(p);
+          count++;
+        }
+      });
+    });
+    this.data.meta.totalProblems = count;
+  }
+
+  // 根据 levelId 生成不同题型（这里只给每级一个典型模板，可继续扩展）
+  generateProblem(levelId, subId, index) {
+    const id = `${subId}-${String(index).padStart(3, "0")}`;
+
+    // Level 1：看不见的面点数和
+    if (levelId === 1) {
+      const visible = this.randomVisibleFaces();
+      const total = 21;
+      const visibleSum = visible.reduce((a, b) => a + b, 0);
+      const hiddenSum = total - visibleSum;
+      return {
+        levelId,
+        subId,
+        problemId: id,
+        type: "dice-visible-sum",
+        statement: `一个骰子有三个面可见：${visible.join("、")}。看不见的三个面的点数和是多少？`,
+        answer: hiddenSum,
+        solutions: [
+          {
+            title: "方法一：总和减法",
+            steps: [
+              "一个骰子 1~6 的总和是 21。",
+              `已知三个面的点数和为 ${visibleSum}。`,
+              `看不见的三个面的点数和为 21 - ${visibleSum} = ${hiddenSum}。`
+            ]
+          },
+          {
+            title: "方法二：用相对面和为 7",
+            steps: [
+              "骰子相对面的点数和为 7。",
+              "根据已知面推对面，再把三个对面点数相加。"
+            ]
+          }
+        ],
+        aiExplain: {
+          hintSteps: [
+            "先算出 1~6 的总和。",
+            "再算出已知三个面的和。",
+            "用总和减去已知面的和。"
+          ],
+          commonMistakes: [
+            "忘记算总和。",
+            "把看得见的面也算进看不见的面。"
+          ]
+        }
+      };
+    }
+
+    // Level 2：判断骰子是否正确（简单逻辑题）
+    if (levelId === 2) {
+      const a = this.randomFace();
+      const b = this.randomFace();
+      const isOpposite7 = (a + b === 7);
+      return {
+        levelId,
+        subId,
+        problemId: id,
+        type: "dice-check-opposite-7",
+        statement: `一个骰子上有两个相对的面，点数分别是 ${a} 和 ${b}。这个骰子是否可能是标准骰子（相对面和为 7）？回答：1 表示可能，0 表示不可能。`,
+        answer: isOpposite7 ? 1 : 0,
+        solutions: [
+          {
+            title: "方法一：直接判断和是否为 7",
+            steps: [
+              `计算两个面的点数和：${a} + ${b} = ${a + b}。`,
+              "如果和为 7，则可能是标准骰子；否则一定不是。"
+            ]
+          }
+        ],
+        aiExplain: {
+          hintSteps: [
+            "想一想：标准骰子的相对面点数和是多少？",
+            "把这两个数加起来，看结果是不是 7。"
+          ],
+          commonMistakes: [
+            "记错成相对面和为 6 或 8。",
+            "只看其中一个面，没有计算和。"
+          ]
+        }
+      };
+    }
+
+    // Level 3：相邻贴面和为 8
+    if (levelId === 3) {
+      const left = this.randomFace();
+      const right = 8 - left;
+      return {
+        levelId,
+        subId,
+        problemId: id,
+        type: "dice-adjacent-8",
+        statement: `两个骰子相贴，贴着的两个面点数和为 8。已知左边贴面是 ${left}，问右边贴面是多少？`,
+        answer: right,
+        solutions: [
+          {
+            title: "方法一：和为 8",
+            steps: [
+              "贴面点数和为 8。",
+              `右面 = 8 - 左面 = 8 - ${left} = ${right}。`
+            ]
+          }
+        ],
+        aiExplain: {
+          hintSteps: [
+            "两个数加起来是 8。",
+            `其中一个是 ${left}，另一个是多少？`
+          ],
+          commonMistakes: [
+            "把 7 当成贴面和。",
+            "算成 8 + 左面。"
+          ]
+        }
+      };
+    }
+
+    // Level 4：多骰子链式推理（简单版）
+    if (levelId === 4) {
+      const first = this.randomFace();
+      const second = 8 - first;
+      const third = 8 - second;
+      return {
+        levelId,
+        subId,
+        problemId: id,
+        type: "dice-chain-3",
+        statement: `三个骰子排成一条直线，相邻贴面点数和都为 8。已知第一个骰子的前面是 ${first}，问第三个骰子的前面是多少？`,
+        answer: third,
+        solutions: [
+          {
+            title: "方法一：逐步推理",
+            steps: [
+              `第一个与第二个贴面和为 8，第二个前面 = 8 - ${first} = ${second}。`,
+              `第二个与第三个贴面和为 8，第三个前面 = 8 - ${second} = ${third}。`
+            ]
+          }
+        ],
+        aiExplain: {
+          hintSteps: [
+            "先求出第二个骰子的前面。",
+            "再用同样的方法求出第三个骰子的前面。"
+          ],
+          commonMistakes: [
+            "只算了第二个，没有继续算第三个。",
+            "把 7 当成贴面和。"
+          ]
+        }
+      };
+    }
+
+    // Level 5：空间方位与面推理（简化版）
+    if (levelId === 5) {
+      const top = 2;
+      const front = 6;
+      const right = 3; // 采用标准布局的一个例子
+      return {
+        levelId,
+        subId,
+        problemId: id,
+        type: "dice-orientation-basic",
+        statement: `一个骰子放在桌面上，顶部是 ${top}，前面是 ${front}。问右侧面是多少？（按标准骰子布局）`,
+        answer: right,
+        solutions: [
+          {
+            title: "方法一：记住标准布局",
+            steps: [
+              "标准骰子中，2 的对面是 5，6 的对面是 1。",
+              "剩下的两个侧面是 3 和 4。",
+              "根据常见布局，右侧面是 3。"
+            ]
+          }
+        ],
+        aiExplain: {
+          hintSteps: [
+            "回忆标准骰子的布局：哪些数字在相邻面上？",
+            "找出剩下的两个侧面，再确定右侧面。"
+          ],
+          commonMistakes: [
+            "把对面当成右侧面。",
+            "记错标准布局。"
+          ]
+        }
+      };
+    }
+
+    // Level 6：多骰子空间组合（简化版）
+    if (levelId === 6) {
+      const front = 5;
+      const possible = [1, 6]; // 示例：剩余侧面
+      return {
+        levelId,
+        subId,
+        problemId: id,
+        type: "dice-stack-2",
+        statement: `两个骰子上下叠放，上骰右面为 1，下骰前面为 ${front}。问下骰右面可能是多少？（填入其中一个可能值）`,
+        answer: possible[0],
+        solutions: [
+          {
+            title: "方法一：找剩余侧面",
+            steps: [
+              "下骰前面为 5，对面为 2。",
+              "剩余两个侧面为 1 和 6。",
+              "因此下骰右面可能是 1 或 6。"
+            ]
+          }
+        ],
+        aiExplain: {
+          hintSteps: [
+            "先找出前面的对面。",
+            "再找出剩余两个侧面。"
+          ],
+          commonMistakes: [
+            "把顶部或底部当成右侧面。",
+            "只考虑一个侧面。"
+          ]
+        }
+      };
+    }
+
+    // Level 7：单步旋转与滚动（简化版）
+    if (levelId === 7) {
+      const top = 1;
+      const front = 2;
+      const newTop = 2; // 前滚一格
+      return {
+        levelId,
+        subId,
+        problemId: id,
+        type: "dice-roll-1",
+        statement: `一个骰子顶部是 ${top}，前面是 ${front}。向前滚动一格后，顶部是多少？`,
+        answer: newTop,
+        solutions: [
+          {
+            title: "方法一：前滚规则",
+            steps: [
+              "向前滚动时，前面变成顶部。",
+              `因此新的顶部是原来的前面 ${front}。`
+            ]
+          }
+        ],
+        aiExplain: {
+          hintSteps: [
+            "想象骰子向前滚动：哪个面会滚到上面？"
+          ],
+          commonMistakes: [
+            "把后面当成新的顶部。",
+            "把右侧面当成新的顶部。"
+          ]
+        }
+      };
+    }
+
+    // Level 8：多步旋转与路径（简化版）
+    if (levelId === 8) {
+      const top0 = 1;
+      const front0 = 2;
+      const top1 = 2; // 前滚
+      const top2 = 3; // 左滚（示例）
+      const top3 = 6; // 再前滚（示例）
+      return {
+        levelId,
+        subId,
+        problemId: id,
+        type: "dice-roll-3",
+        statement: `一个骰子依次执行：前滚 → 左滚 → 前滚。初始顶部为 ${top0}，前面为 ${front0}。问最终顶部是多少？（按给定示例布局）`,
+        answer: top3,
+        solutions: [
+          {
+            title: "方法一：逐步模拟",
+            steps: [
+              `前滚：顶部变为前面 ${front0}，得到顶部 ${top1}。`,
+              "左滚：顶部变为左侧面（示例设为 3），得到顶部 3。",
+              "再前滚：顶部变为前面（示例设为 6），最终顶部为 6。"
+            ]
+          }
+        ],
+        aiExplain: {
+          hintSteps: [
+            "每一步滚动都要更新顶部。",
+            "按顺序模拟三次滚动。"
+          ],
+          commonMistakes: [
+            "只算了一步或两步。",
+            "滚动方向搞错。"
+          ]
+        }
+      };
+    }
+
+    // Level 9：三维坐标与滚动路径（简化版）
+    if (levelId === 9) {
+      const topFinal = 6;
+      return {
+        levelId,
+        subId,
+        problemId: id,
+        type: "dice-path-3",
+        statement: `一个骰子从 (0,0) 滚到 (2,1)，路径为：右、右、前。初始顶部为 1，前面为 2。问最终顶部是多少？（按示例布局）`,
+        answer: topFinal,
+        solutions: [
+          {
+            title: "方法一：按路径逐步滚动",
+            steps: [
+              "第一次右滚：顶部变为右侧面（示例设为 3）。",
+              "第二次右滚：顶部变为新的右侧面（示例设为 5）。",
+              "最后前滚：顶部变为前面（示例设为 6）。"
+            ]
+          }
+        ],
+        aiExplain: {
+          hintSteps: [
+            "把路径拆成三步：右、右、前。",
+            "每一步都更新顶部。"
+          ],
+          commonMistakes: [
+            "只考虑坐标变化，没有考虑骰子旋转。",
+            "路径顺序搞错。"
+          ]
+        }
+      };
+    }
+
+    // Level 10：展开图与折叠（概念题）
+    if (levelId === 10) {
+      return {
+        levelId,
+        subId,
+        problemId: id,
+        type: "dice-net-basic",
+        statement: `一个标准骰子的展开图折叠后，顶部是 4。问：顶部的对面是多少？`,
+        answer: 3,
+        solutions: [
+          {
+            title: "方法一：相对面和为 7",
+            steps: [
+              "标准骰子相对面点数和为 7。",
+              "顶部是 4，对面 = 7 - 4 = 3。"
+            ]
+          }
+        ],
+        aiExplain: {
+          hintSteps: [
+            "回忆标准骰子的相对面规律。",
+            "用 7 减去顶部的点数。"
+          ],
+          commonMistakes: [
+            "记错成和为 6 或 8。",
+            "把相邻面当成对面。"
+          ]
+        }
+      };
+    }
+
+    // Level 11：立方体旋转群基础（概念题）
+    if (levelId === 11) {
+      return {
+        levelId,
+        subId,
+        problemId: id,
+        type: "group-size",
+        statement: `立方体的旋转群有多少种不同的朝向？`,
+        answer: 24,
+        solutions: [
+          {
+            title: "方法一：6×4 计数",
+            steps: [
+              "可以选择任意一个面作为顶部，共 6 种选择。",
+              "固定顶部后，前面可以有 4 种方向。",
+              "总共 6 × 4 = 24 种不同朝向。"
+            ]
+          }
+        ],
+        aiExplain: {
+          hintSteps: [
+            "先选顶部，再选前面。",
+            "用乘法原理计算总数。"
+          ],
+          commonMistakes: [
+            "忘记前面还有 4 种方向。",
+            "只算了 6 种。"
+          ]
+        }
+      };
+    }
+
+    // Level 12：组合计数与可见面（简化版）
+    if (levelId === 12) {
+      return {
+        levelId,
+        subId,
+        problemId: id,
+        type: "visible-combinations",
+        statement: `两个骰子叠放，问不同的可见面组合有多少种？（简化模型：每个骰子顶部 6 种，前面 4 种）`,
+        answer: 576,
+        solutions: [
+          {
+            title: "方法一：乘法原理",
+            steps: [
+              "上骰顶部 6 种，前面 4 种。",
+              "下骰顶部 6 种，前面 4 种。",
+              "总数 = 6 × 4 × 6 × 4 = 576。"
+            ]
+          }
+        ],
+        aiExplain: {
+          hintSteps: [
+            "分别考虑上骰和下骰。",
+            "用乘法原理把所有可能相乘。"
+          ],
+          commonMistakes: [
+            "只算了一个骰子的组合。",
+            "忘记乘法原理。"
+          ]
+        }
+      };
+    }
+
+    // Level 13：群作用与轨道（概念题）
+    if (levelId === 13) {
+      return {
+        levelId,
+        subId,
+        problemId: id,
+        type: "orbit-count",
+        statement: `一个标准骰子六个面标号 1–6，在旋转群作用下，面集合的轨道数量是多少？`,
+        answer: 1,
+        solutions: [
+          {
+            title: "方法一：所有面等价",
+            steps: [
+              "立方体旋转可以把任意一个面转到任意另一个面的位置。",
+              "因此所有面在群作用下属于同一个轨道。",
+              "轨道数量为 1。"
+            ]
+          }
+        ],
+        aiExplain: {
+          hintSteps: [
+            "想一想：通过旋转，能否把一个面转到另一个面？",
+            "如果都能转到，就在同一个轨道。"
+          ],
+          commonMistakes: [
+            "误以为每个面是一个轨道。",
+            "忽略旋转的作用。"
+          ]
+        }
+      };
+    }
+
+    // Level 14：图论视角的骰子邻接图（概念题）
+    if (levelId === 14) {
+      return {
+        levelId,
+        subId,
+        problemId: id,
+        type: "graph-diameter",
+        statement: `构造骰子的邻接图（六个面为节点，相邻面之间连边），问这个图的直径是多少？`,
+        answer: 2,
+        solutions: [
+          {
+            title: "方法一：对面距离为 2",
+            steps: [
+              "每个面与 4 个面相邻。",
+              "对面之间的最短路径需要经过一个相邻面，距离为 2。",
+              "最大距离为 2，因此直径为 2。"
+            ]
+          }
+        ],
+        aiExplain: {
+          hintSteps: [
+            "找出距离最远的一对面（对面）。",
+            "计算它们之间的最短路径长度。"
+          ],
+          commonMistakes: [
+            "误以为直径为 3。",
+            "没有考虑对面之间的路径。"
+          ]
+        }
+      };
+    }
+
+    // Level 15：立方体旋转群 ≅ S₄（概念题）
+    if (levelId === 15) {
+      return {
+        levelId,
+        subId,
+        problemId: id,
+        type: "group-isomorphism",
+        statement: `立方体旋转群同构于哪个对称群？（填入 n，使得是 Sₙ）`,
+        answer: 4,
+        solutions: [
+          {
+            title: "方法一：空间对角线的作用",
+            steps: [
+              "立方体有 4 条空间对角线。",
+              "旋转群作用在这 4 条对角线上，得到一个到 S₄ 的同构。",
+              "因此立方体旋转群同构于 S₄。"
+            ]
+          }
+        ],
+        aiExplain: {
+          hintSteps: [
+            "想一想：立方体有哪些“重要对象”可以被旋转作用？",
+            "空间对角线是一个关键。"
+          ],
+          commonMistakes: [
+            "误答成 S₆。",
+            "忽略对角线的数量。"
+          ]
+        }
+      };
+    }
+
+    // Level 16：马尔可夫链与稳态分布（简化版）
+    if (levelId === 16) {
+      return {
+        levelId,
+        subId,
+        problemId: id,
+        type: "markov-steady",
+        statement: `一个骰子随机滚动，构造其状态转移矩阵并求稳态分布。问稳态分布中每个面的概率是多少？（填入分数的分母，如 1/6 填 6）`,
+        answer: 6,
+        solutions: [
+          {
+            title: "方法一：对称性与均匀分布",
+            steps: [
+              "每个面在长期滚动中处于对称地位。",
+              "稳态分布应当是均匀分布。",
+              "因此每个面的概率为 1/6，分母为 6。"
+            ]
+          }
+        ],
+        aiExplain: {
+          hintSteps: [
+            "想一想：有没有哪个面在长期滚动中更“特殊”？",
+            "如果都一样，就应该是均匀分布。"
+          ],
+          commonMistakes: [
+            "误以为某个面概率更大。",
+            "没有利用对称性。"
+          ]
+        }
+      };
+    }
+
+    // 默认占位
+    return {
+      levelId,
+      subId,
+      problemId: id,
+      type: "placeholder",
+      statement: "此级别题型待扩展。",
+      answer: 0,
+      solutions: [],
+      aiExplain: {
+        hintSteps: [],
+        commonMistakes: []
+      }
+    };
+  }
+
+  randomFace() {
+    return Math.floor(Math.random() * 6) + 1;
+  }
+
+  randomVisibleFaces() {
+    const faces = [1, 2, 3, 4, 5, 6];
+    return faces.sort(() => Math.random() - 0.5).slice(0, 3);
+  }
+
+  exportJSON() {
+    return JSON.stringify(this.data, null, 2);
+  }
+}
+
+/**
+ * 用户统计与成长图谱
+ */
+const userStats = {
+  correct: 0,
+  wrong: 0,
+  levelProgress: {} // key: levelId-subId -> {correct, wrong, totalTime, count}
+};
+
+function recordResult(problem, isCorrect, timeMs) {
+  const key = `${problem.levelId}-${problem.subId}`;
+  if (!userStats.levelProgress[key]) {
+    userStats.levelProgress[key] = { correct: 0, wrong: 0, totalTime: 0, count: 0 };
+  }
+  const lp = userStats.levelProgress[key];
+  lp.count++;
+  lp.totalTime += timeMs;
+  if (isCorrect) lp.correct++;
+  else lp.wrong++;
+  if (isCorrect) userStats.correct++;
+  else userStats.wrong++;
+  updateStatsSummary();
+  renderGrowthChart();
+}
+
+function updateStatsSummary() {
+  const total = userStats.correct + userStats.wrong;
+  const acc = total ? (userStats.correct / total * 100).toFixed(1) : "0.0";
+  document.getElementById("stats-summary").textContent =
+    `已做题数：${total}，正确：${userStats.correct}，错误：${userStats.wrong}，整体正确率：${acc}%`;
+}
+
+function renderGrowthChart() {
+  const chart = document.getElementById("growth-chart");
+  chart.innerHTML = "";
+  const keys = Object.keys(userStats.levelProgress);
+  if (!keys.length) {
+    chart.textContent = "还没有数据，先做几道题试试吧。";
+    return;
+  }
+  const maxCount = Math.max(...keys.map(k => userStats.levelProgress[k].count));
+  const width = chart.clientWidth;
+  const barWidth = Math.max(12, Math.min(24, width / (keys.length * 1.5)));
+
+  keys.forEach((key, idx) => {
+    const lp = userStats.levelProgress[key];
+    const hRatio = lp.count / maxCount;
+    const barHeight = hRatio * (chart.clientHeight - 30);
+    const x = 10 + idx * (barWidth + 8);
+
+    const bar = document.createElement("div");
+    bar.className = "growth-bar";
+    bar.style.left = x + "px";
+    bar.style.height = barHeight + "px";
+    const acc = lp.correct ? (lp.correct / lp.count * 100).toFixed(0) : 0;
+    bar.style.background = `linear-gradient(to top, #4a6cf7, #8fb3ff ${acc}%)`;
+    chart.appendChild(bar);
+
+    const label = document.createElement("div");
+    label.className = "growth-label";
+    label.style.left = (x + barWidth / 2) + "px";
+    label.textContent = key;
+    chart.appendChild(label);
+  });
+}
+
+/**
+ * 题目选择策略：自适应（优先选用户表现较差的级别）
+ */
+function pickNextProblem(engineData, currentProblem) {
+  const allProblems = [];
+  engineData.levels.forEach(level => {
+    level.subLevels.forEach(sub => {
+      sub.problems.forEach(p => allProblems.push(p));
+    });
+  });
+
+  // 如果还没有统计，随机选一题
+  const keys = Object.keys(userStats.levelProgress);
+  if (!keys.length) {
+    return allProblems[Math.floor(Math.random() * allProblems.length)];
+  }
+
+  let worstKey = null;
+  let worstScore = -Infinity;
+  keys.forEach(key => {
+    const lp = userStats.levelProgress[key];
+    const accuracy = lp.correct / lp.count;
+    const avgTime = lp.totalTime / lp.count;
+    const score = (1 - accuracy) * 0.7 + (avgTime / 60000) * 0.3;
+    if (score > worstScore) {
+      worstScore = score;
+      worstKey = key;
+    }
+  });
+
+  const [levelIdStr, subId] = worstKey.split("-");
+  const levelId = Number(levelIdStr);
+  const candidates = allProblems.filter(
+    p => p.levelId === levelId && p.subId === subId
+  );
+  if (!candidates.length) {
+    return allProblems[Math.floor(Math.random() * allProblems.length)];
+  }
+  return candidates[Math.floor(Math.random() * candidates.length)];
+}
+
+/**
+ * 渲染解析
+ */
+function renderExplain(problem) {
+  const panel = document.getElementById("explain-panel");
+  if (!problem) {
+    panel.textContent = "当前没有题目。";
+    return;
+  }
+  let html = "";
+  if (problem.aiExplain.hintSteps && problem.aiExplain.hintSteps.length) {
+    html += "<h4>思路提示：</h4><ol>";
+    problem.aiExplain.hintSteps.forEach(s => html += `<li>${s}</li>`);
+    html += "</ol>";
+  }
+  if (problem.solutions && problem.solutions.length) {
+    html += "<h4>多种解法：</h4>";
+    problem.solutions.forEach(sol => {
+      html += `<h5>${sol.title}</h5><ol>`;
+      sol.steps.forEach(step => html += `<li>${step}</li>`);
+      html += "</ol>";
+    });
+  }
+  if (problem.aiExplain.commonMistakes && problem.aiExplain.commonMistakes.length) {
+    html += "<h4>常见错误：</h4><ul>";
+    problem.aiExplain.commonMistakes.forEach(m => html += `<li>${m}</li>`);
+    html += "</ul>";
+  }
+  panel.innerHTML = html || "暂时没有解析信息。";
+}
+
+/**
+ * 页面初始化与事件绑定
+ */
+const engine = new DiceTopicEngine({
+  subLevelsPerLevel: 5,
+  problemsPerSubLevel: 20,
+  totalProblems: 1000
+});
+engine.initLevels();
+engine.generateSubLevels();
+engine.generateProblems();
+
+let currentProblem = null;
+let currentStartTime = null;
+
+function renderProblem(problem) {
+  currentProblem = problem;
+  currentStartTime = Date.now();
+  document.getElementById("answer-input").value = "";
+  document.getElementById("result-msg").textContent = "";
+  document.getElementById("explain-panel").textContent = "点击“不会？点我讲解”查看详细解析。";
+
+  const level = engine.data.levels.find(l => l.levelId === problem.levelId);
+  const sub = level.subLevels.find(s => s.subId === problem.subId);
+
+  document.getElementById("problem-meta").textContent =
+    `${level.label}（${level.gradeHint}） · ${sub.name} · 题号：${problem.problemId}`;
+  document.getElementById("problem-statement").textContent = problem.statement;
+}
+
+function initSelectors() {
+  const selLevel = document.getElementById("select-level");
+  const selSub = document.getElementById("select-sublevel");
+  selLevel.innerHTML = "";
+  engine.data.levels.forEach(level => {
+    const opt = document.createElement("option");
+    opt.value = level.levelId;
+    opt.textContent = `${level.levelId} · ${level.label}（${level.gradeHint}）`;
+    selLevel.appendChild(opt);
+  });
+  selLevel.addEventListener("change", () => {
+    const levelId = Number(selLevel.value);
+    const level = engine.data.levels.find(l => l.levelId === levelId);
+    selSub.innerHTML = "";
+    level.subLevels.forEach(sub => {
+      const opt = document.createElement("option");
+      opt.value = sub.subId;
+      opt.textContent = sub.name;
+      selSub.appendChild(opt);
+    });
+  });
+  selLevel.dispatchEvent(new Event("change"));
+}
+
+document.getElementById("btn-submit").addEventListener("click", () => {
+  if (!currentProblem) return;
+  const val = document.getElementById("answer-input").value;
+  if (val === "") {
+    document.getElementById("result-msg").textContent = "请先输入你的答案。";
+    return;
+  }
+  const num = Number(val);
+  const isCorrect = (num === currentProblem.answer);
+  const timeUsed = Date.now() - currentStartTime;
+  recordResult(currentProblem, isCorrect, timeUsed);
+  document.getElementById("result-msg").textContent =
+    isCorrect ? "✅ 回答正确！" : `❌ 回答错误，正确答案是：${currentProblem.answer}`;
+});
+
+document.getElementById("btn-next").addEventListener("click", () => {
+  const next = pickNextProblem(engine.data, currentProblem);
+  renderProblem(next);
+});
+
+document.getElementById("btn-explain").addEventListener("click", () => {
+  renderExplain(currentProblem);
+});
+
+document.getElementById("btn-jump").addEventListener("click", () => {
+  const levelId = Number(document.getElementById("select-level").value);
+  const subId = document.getElementById("select-sublevel").value;
+  const level = engine.data.levels.find(l => l.levelId === levelId);
+  const sub = level.subLevels.find(s => s.subId === subId);
+  const p = sub.problems[Math.floor(Math.random() * sub.problems.length)];
+  renderProblem(p);
+});
+
+document.getElementById("btn-reset").addEventListener("click", () => {
+  userStats.correct = 0;
+  userStats.wrong = 0;
+  userStats.levelProgress = {};
+  updateStatsSummary();
+  renderGrowthChart();
+  document.getElementById("result-msg").textContent = "统计已重置。";
+});
+
+// 初始化
+initSelectors();
+updateStatsSummary();
+renderGrowthChart();
+// 初始随机一题
+const allProblemsInit = [];
+engine.data.levels.forEach(level => {
+  level.subLevels.forEach(sub => {
+    sub.problems.forEach(p => allProblemsInit.push(p));
+  });
+});
+renderProblem(allProblemsInit[Math.floor(Math.random() * allProblemsInit.length)]);
+</script>
+</body>
+</html>
