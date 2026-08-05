@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>🎲 题库管理后台 · math-practice_0002_admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f5f7fb;
+  }
+  header {
+    background: #222;
+    color: #fff;
+    padding: 10px 16px;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 20px;
+  }
+  header small {
+    display: block;
+    font-size: 12px;
+    opacity: 0.85;
+  }
+  main {
+    padding: 12px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1.4fr;
+    gap: 12px;
+  }
+  .panel {
+    background: #fff;
+    border-radius: 8px;
+    padding: 10px 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+  }
+  .panel h2 {
+    margin-top: 0;
+    font-size: 18px;
+  }
+  button {
+    padding: 6px 10px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    margin-right: 6px;
+    margin-top: 4px;
+  }
+  button.primary { background: #4a6cf7; color: #fff; }
+  button.secondary { background: #e0e4ff; color: #333; }
+  input[type="text"], input[type="file"], textarea {
+    padding: 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 13px;
+  }
+  textarea {
+    width: 100%;
+    min-height: 160px;
+  }
+  .tag {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 999px;
+    font-size: 11px;
+    background: #e0e4ff;
+    color: #333;
+    margin-right: 4px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎲 题库管理后台 · math-practice_0002_admin</h1>
+  <small>生成 / 编辑 / 搜索 / 批量修改 / 校验 / AI 补全 / AI 出题 / 差分升级 / GitHub 云同步 / 可视化图谱</small>
+</header>
+
+<main>
+
+<section class="panel">
+  <h2>题库加载与导出</h2>
+  <p>
+    <span class="tag">题库 JSON：math-practice_0002_data.json</span>
+    <span class="tag">学生页面：math-practice_0002.html</span>
+  </p>
+  <div style="margin-bottom:8px;">
+    <input type="file" id="file-input" accept=".json" />
+    <button class="secondary" onclick="loadJSONFromFile()">从本地文件加载题库 JSON</button>
+  </div>
+  <div style="margin-bottom:8px;">
+    <button class="secondary" onclick="generateDiceJSON()">生成新题库 JSON（DiceTopicEngine）</button>
+    <button class="secondary" onclick="downloadCurrentJSON()">下载当前题库 JSON</button>
+  </div>
+  <div id="load-status" style="font-size:13px;color:#555;"></div>
+</section>
+
+<div class="grid">
+
+  <section class="panel">
+    <h2>题库编辑 / 搜索 / 批量修改</h2>
+    <div style="margin-bottom:8px;">
+      <label>搜索关键字：</label>
+      <input type="text" id="search-input" style="width:200px;" />
+      <button class="secondary" onclick="searchProblems()">搜索题目</button>
+    </div>
+    <div id="search-result" style="font-size:13px;margin-bottom:8px;"></div>
+
+    <div style="margin-bottom:8px;">
+      <button class="secondary" onclick="batchEditLevel()">批量修改某级别所有题目（占位）</button>
+      <button class="secondary" onclick="validateJSON()">题库校验器</button>
+    </div>
+    <div style="margin-bottom:8px;">
+      <button class="primary" onclick="addAdvancedMethodsToAllPathProblems()">
+        一键为所有路径题追加方法三/方法四 + 立体图动画标记
+      </button>
+    </div>
+    <div id="advanced-method-status" style="font-size:13px;color:#555;"></div>
+
+    <h3>当前 JSON 预览</h3>
+    <textarea id="preview-area"></textarea>
+  </section>
+
+  <section class="panel">
+    <h2>AI 自动补全 / AI 出题器 / 差分升级 / 云同步</h2>
+
+    <h3>AI 自动补全题库（占位）</h3>
+    <div style="font-size:13px;margin-bottom:8px;">
+      <button class="secondary" onclick="aiCompleteMissingProblems()">AI 自动补全缺失题目（占位）</button>
+    </div>
+
+    <h3>AI 自动出题器（高级版入口）</h3>
+    <div style="margin-bottom:8px;font-size:13px;">
+      <label>目标级别（1–16）：</label>
+      <input type="text" id="ai-target-level" value="3" style="width:80px;" />
+    </div>
+    <div style="margin-bottom:8px;font-size:13px;">
+      <label>出题模式：</label>
+      <select id="ai-mode">
+        <option value="basic">基础模式：小学~初中骰子题</option>
+        <option value="advanced">高级模式：空间推理 / 群论 / 马尔可夫链</option>
+      </select>
+    </div>
+    <button class="secondary" onclick="runAIGenerator()">运行 AI 自动出题器（占位）</button>
+    <div id="ai-status" style="font-size:13px;margin-top:4px;color:#555;"></div>
+
+    <h3>题库版本管理 / 差分升级</h3>
+    <div style="margin-bottom:8px;">
+      <label>当前版本号：</label>
+      <input type="text" id="current-version" value="1.0.0" style="width:120px;" />
+      <button class="secondary" onclick="saveVersionTag()">保存版本标签（本地）</button>
+    </div>
+    <div id="version-list" style="font-size:13px;border:1px solid #ddd;border-radius:6px;padding:6px;max-height:120px;overflow-y:auto;">
+      还没有记录版本。
+    </div>
+
+    <h3>GitHub 云端同步</h3>
+    <div style="margin-bottom:6px;">
+      <label>仓库：</label>
+      <input type="text" id="repo-input" value="always001/always001.github.io" style="width:260px;" />
+    </div>
+    <div style="margin-bottom:6px;">
+      <label>路径：</label>
+      <input type="text" id="path-input" value="math-practice_0002_data.json" style="width:260px;" />
+    </div>
+    <div style="margin-bottom:6px;">
+      <label>Token：</label>
+      <input type="text" id="token-input" value="YOUR_GITHUB_TOKEN" style="width:260px;" />
+    </div>
+    <button class="primary" onclick="syncToGitHub()">模拟：提交当前题库到 GitHub</button>
+    <div id="sync-status" style="font-size:13px;margin-top:4px;color:#555;"></div>
+  </section>
+
+</div>
+
+<section class="panel" style="margin-top:12px;">
+  <h2>题库可视化图谱（树状图 + 关系图 · 占位）</h2>
+  <canvas id="graph-canvas" width="600" height="260" style="border:1px solid #ddd;"></canvas>
+  <button class="secondary" onclick="drawTopicGraph()">绘制题库成长图谱</button>
+</section>
+
+<script>
+// ========== DiceTopicEngine（简化版占位） ==========
+class DiceTopicEngine {
+  constructor(config) {
+    this.subLevelsPerLevel = config.subLevelsPerLevel || 5;
+    this.problemsPerSubLevel = config.problemsPerSubLevel || 20;
+    this.totalProblems = config.totalProblems || 1000;
+    this.data = { levels: [] };
+  }
+  initLevels() {
+    this.data.levels = [];
+    for (let i = 1; i <= 16; i++) {
+      this.data.levels.push({
+        level: i,
+        name: `Level ${i} · 骰子专题`,
+        subLevels: []
+      });
+    }
+  }
+  generateSubLevels() {
+    this.data.levels.forEach(level => {
+      level.subLevels = [];
+      for (let s = 1; s <= this.subLevelsPerLevel; s++) {
+        level.subLevels.push({
+          subLevel: s,
+          name: `子级别 ${s}`,
+          problems: []
+        });
+      }
+    });
+  }
+  generateProblems() {
+    this.data.levels.forEach(level => {
+      level.subLevels.forEach(sub => {
+        for (let p = 1; p <= this.problemsPerSubLevel; p++) {
+          const id = `${level.level}-${sub.subLevel}-${String(p).padStart(3,"0")}`;
+          sub.problems.push({
+            id,
+            statement: `示例题目：Level ${level.level} · 子级别 ${sub.subLevel} · 题号 ${id}`,
+            answer: 6,
+            initialTop: 1,
+            initialFront: 2,
+            initialRight: 3,
+            path: ["右","右","前"],
+            hasAnimation: true,
+            has3D: false,
+            solutions: [
+              {
+                method: "方法一：路径滚动法",
+                steps: [
+                  "按题目给出的路径逐步更新顶部。",
+                  "每一步都根据当前顶部和相邻面关系进行推理。"
+                ]
+              },
+              {
+                method: "方法二：立体图推理法",
+                steps: [
+                  "参考标准骰子立体图：1↔6，2↔5，3↔4。",
+                  "根据立体图判断初始顶部、前面、右侧面。",
+                  "每滚动一步，根据立体图更新顶部。",
+                  "最终得到顶部结果。"
+                ]
+              }
+            ]
+          });
+        }
+      });
+    });
+  }
+  exportJSON() {
+    return this.data;
+  }
+}
+
+// ========== 生成 JSON 并下载 ==========
+let currentJSON = null;
+let versionHistory = [];
+
+function generateDiceJSON() {
+  const engine = new DiceTopicEngine({
+    subLevelsPerLevel: 5,
+    problemsPerSubLevel: 20,
+    totalProblems: 1000
+  });
+  engine.initLevels();
+  engine.generateSubLevels();
+  engine.generateProblems();
+  currentJSON = engine.exportJSON();
+  document.getElementById("load-status").textContent = "已生成新的题库 JSON。";
+  document.getElementById("preview-area").value =
+    JSON.stringify(currentJSON, null, 2);
+}
+
+function downloadJSON(filename, jsonObj) {
+  const blob = new Blob([JSON.stringify(jsonObj, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function downloadCurrentJSON() {
+  if (!currentJSON) {
+    alert("当前没有题库 JSON。");
+    return;
+  }
+  downloadJSON("math-practice_0002_data.json", currentJSON);
+}
+
+// ========== 从文件加载 JSON ==========
+function loadJSONFromFile() {
+  const input = document.getElementById("file-input");
+  if (!input.files || !input.files[0]) {
+    alert("请选择一个 JSON 文件。");
+    return;
+  }
+  const file = input.files[0];
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      currentJSON = JSON.parse(e.target.result);
+      document.getElementById("load-status").textContent =
+        `已从文件加载题库：${file.name}`;
+      document.getElementById("preview-area").value =
+        JSON.stringify(currentJSON, null, 2);
+    } catch (err) {
+      alert("JSON 解析失败。");
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ========== 搜索 / 批量编辑 / 校验 ==========
+function searchProblems() {
+  if (!currentJSON) {
+    document.getElementById("search-result").textContent = "请先加载题库。";
+    return;
+  }
+  const keyword = document.getElementById("search-input").value.trim();
+  if (!keyword) {
+    document.getElementById("search-result").textContent = "请输入关键字。";
+    return;
+  }
+  let results = [];
+  currentJSON.levels.forEach(level => {
+    level.subLevels.forEach(sub => {
+      sub.problems.forEach(p => {
+        if (p.statement.includes(keyword) || String(p.id).includes(keyword)) {
+          results.push(p.id);
+        }
+      });
+    });
+  });
+  document.getElementById("search-result").textContent =
+    `找到 ${results.length} 条结果：` + results.join(", ");
+}
+
+function batchEditLevel() {
+  alert("这里是批量编辑某级别所有题目的占位逻辑：实际可以遍历某 level 的 problems 并修改字段。");
+}
+
+function validateJSON() {
+  if (!currentJSON) {
+    alert("请先加载题库。");
+    return;
+  }
+  try {
+    JSON.stringify(currentJSON);
+    alert("JSON 结构基本有效（语法层面）。具体题目逻辑校验可再扩展。");
+  } catch (err) {
+    alert("JSON 结构有问题：" + err.message);
+  }
+}
+
+// ========== 一键追加方法三/四 + 动画标记 ==========
+function addAdvancedMethodsToAllPathProblems() {
+  if (!currentJSON) {
+    document.getElementById("advanced-method-status").textContent = "请先加载题库。";
+    return;
+  }
+
+  let count = 0;
+
+  currentJSON.levels.forEach(level => {
+    level.subLevels.forEach(sub => {
+      sub.problems.forEach(p => {
+        const isPathProblem =
+          (p.statement && p.statement.includes("路径")) ||
+          (p.aiExplain && p.aiExplain.type && p.aiExplain.type.includes("path")) ||
+          (p.aiExplain && Array.isArray(p.aiExplain.tags) && p.aiExplain.tags.includes("路径滚动"));
+
+        if (!isPathProblem) return;
+
+        if (!Array.isArray(p.solutions)) p.solutions = [];
+
+        const hasMethod3 = p.solutions.some(s => s.method && s.method.includes("动画"));
+        if (!hasMethod3) {
+          p.solutions.push({
+            method: "方法三：动画推理法",
+            steps: [
+              "在 Canvas 中播放骰子滚动动画。",
+              "观察每一步滚动后顶部的变化，直观理解空间旋转。",
+              "把动画中的每一帧对应到数学推理步骤。"
+            ],
+            animation: true
+          });
+        }
+
+        const hasMethod4 = p.solutions.some(s => s.method && s.method.includes("坐标系"));
+        if (!hasMethod4) {
+          p.solutions.push({
+            method: "方法四：坐标系推理法",
+            steps: [
+              "把骰子的每个面看作一个朝向向量（如顶部朝 +Z，前面朝 +Y，右侧朝 +X）。",
+              "每一次滚动对应一个坐标轴的旋转（如绕 X 轴或 Y 轴旋转 90°）。",
+              "通过向量旋转或矩阵乘法，计算最终顶部朝向对应的点数。"
+            ],
+            coordinate: true
+          });
+        }
+
+        p.hasAnimation = true;
+        count++;
+      });
+    });
+  });
+
+  document.getElementById("advanced-method-status").textContent =
+    `已为 ${count} 道路径题追加方法三/方法四 + 动画标记！`;
+
+  document.getElementById("preview-area").value =
+    JSON.stringify(currentJSON, null, 2);
+}
+
+// ========== AI 自动补全 / 出题器（占位） ==========
+function aiCompleteMissingProblems() {
+  if (!currentJSON) {
+    alert("请先加载题库。");
+    return;
+  }
+  alert("这里是 AI 自动补全缺失题目的占位逻辑：实际可以调用后端或外部 AI 服务。");
+}
+
+function runAIGenerator() {
+  const level = document.getElementById("ai-target-level").value.trim() || "3";
+  const mode = document.getElementById("ai-mode").value;
+  document.getElementById("ai-status").textContent =
+    `占位：AI 自动出题器正在为 Level ${level} · 模式 ${mode} 生成题目（实际需接入 AI 服务）。`;
+}
+
+// ========== 版本管理 / 差分升级（占位） ==========
+function saveVersionTag() {
+  const v = document.getElementById("current-version").value.trim();
+  if (!v) return;
+  const timestamp = new Date().toISOString().replace("T"," ").slice(0,19);
+  versionHistory.push({ version: v, time: timestamp });
+  renderVersionList();
+}
+
+function renderVersionList() {
+  const box = document.getElementById("version-list");
+  if (!versionHistory.length) {
+    box.textContent = "还没有记录版本。";
+    return;
+  }
+  box.innerHTML = "";
+  versionHistory.forEach(item => {
+    const div = document.createElement("div");
+    div.style.padding = "4px 0";
+    div.style.borderBottom = "1px solid #eee";
+    div.innerHTML = `
+      <b>v${item.version}</b> · ${item.time}
+      <button class="secondary" style="margin-left:8px;" onclick="switchVersion('${item.version}')">切换到此版本（占位）</button>
+    `;
+    box.appendChild(div);
+  });
+}
+
+function switchVersion(v) {
+  alert("这里是版本切换占位逻辑：实际可以根据版本号加载对应的 JSON 文件，例如 math-practice_0002_data_v" + v + ".json");
+}
+
+// ========== GitHub 云同步（示意） ==========
+function syncToGitHub() {
+  const repo = document.getElementById("repo-input").value.trim();
+  const path = document.getElementById("path-input").value.trim();
+  const token = document.getElementById("token-input").value.trim();
+
+  if (!currentJSON) {
+    document.getElementById("sync-status").textContent = "请先加载或生成题库 JSON。";
+    return;
+  }
+
+  document.getElementById("sync-status").textContent =
+    `示例：会调用 GitHub API，把当前题库 JSON 提交到 ${repo} 的 ${path}（Token: ${token.slice(0,4)}...）。实际提交请在安全环境中实现。`;
+}
+
+// ========== 题库可视化图谱（树状图 + 关系图 · 简单占位） ==========
+function drawTopicGraph() {
+  const canvas = document.getElementById("graph-canvas");
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.font = "12px system-ui";
+  ctx.fillStyle = "#333";
+
+  if (!currentJSON) {
+    ctx.fillText("请先加载题库 JSON。", 20, 30);
+    return;
+  }
+
+  const levels = currentJSON.levels || [];
+  const centerX = canvas.width / 2;
+  const centerY = 40;
+
+  ctx.fillText("题库成长图谱（简化树状图）", 20, 20);
+
+  levels.forEach((lvl, idx) => {
+    const x = 40 + idx * 35;
+    const y = centerY + 40;
+    ctx.beginPath();
+    ctx.arc(x, y, 10, 0, Math.PI * 2);
+    ctx.fillText("L" + lvl.level, x - 10, y + 25);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+  });
+}
+
+// ========== 初始化 ==========
+window.onload = function() {
+  renderVersionList();
+};
+</script>
+
+</body>
+</html>

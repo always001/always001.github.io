@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>🎲 骰子数学专题 · 总控制台 · math-practice_0002</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f5f7fb;
+  }
+  header {
+    background: linear-gradient(120deg, #4a6cf7, #7b9dff);
+    color: #fff;
+    padding: 14px 18px;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 22px;
+  }
+  header small {
+    display: block;
+    font-size: 12px;
+    opacity: 0.9;
+  }
+  main {
+    padding: 12px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .cover {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    background: #fff;
+    border-radius: 10px;
+    padding: 12px 14px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    margin-bottom: 12px;
+  }
+  .cover img {
+    width: 220px;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid #e0e4ff;
+  }
+  .cover-text h2 {
+    margin: 0 0 6px;
+    font-size: 20px;
+  }
+  .cover-text p {
+    margin: 4px 0;
+    font-size: 13px;
+    color: #444;
+  }
+  .tag {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 999px;
+    font-size: 11px;
+    background: #e0e4ff;
+    color: #333;
+    margin-right: 4px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1.2fr;
+    gap: 12px;
+  }
+  .panel {
+    background: #fff;
+    border-radius: 8px;
+    padding: 10px 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+  }
+  .panel h2 {
+    margin-top: 0;
+    font-size: 18px;
+  }
+  button {
+    padding: 6px 10px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    margin-right: 6px;
+    margin-top: 4px;
+  }
+  button.primary { background: #4a6cf7; color: #fff; }
+  button.secondary { background: #e0e4ff; color: #333; }
+  .status-ok { color: #1a9c4b; }
+  .status-warn { color: #d9822b; }
+  .status-error { color: #e55353; }
+  ul {
+    margin: 4px 0 0 18px;
+    padding: 0;
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎲 骰子数学专题 · 总控制台 · math-practice_0002</h1>
+  <small>学生练习 · 题库后台 · AI 出题 · 动画解析 · 云同步 · 版本管理</small>
+</header>
+
+<main>
+
+<section class="cover">
+  <img src="https://always001.github.io/assets/math-dice-cover.png" alt="数学乐园 · 骰子专题封面" />
+  <div class="cover-text">
+    <h2>数学乐园 · 骰子专题（空间推理 · 动画解析 · AI 出题）</h2>
+    <p>
+      <span class="tag">小学~初中空间推理</span>
+      <span class="tag">骰子滚动路径</span>
+      <span class="tag">立体图 & 动画</span>
+      <span class="tag">AI 自动出题</span>
+    </p>
+    <p>这是整个 <b>math-practice_0002</b> 系统的首页：从这里进入学生练习页面、题库后台、AI 出题器、版本管理和云同步。</p>
+    <p id="dataset-status" style="font-size:13px;margin-top:4px;"></p>
+  </div>
+</section>
+
+<div class="grid">
+
+  <section class="panel">
+    <h2>入口导航 · 学生 / 后台 / 可视化</h2>
+    <p style="font-size:13px;margin-bottom:6px;">
+      所有链接都指向你的 GitHub Pages：<b>https://always001.github.io/</b>
+    </p>
+    <div style="margin-bottom:8px;">
+      <button class="primary" onclick="openStudent()">进入学生练习页面（math-practice_0002.html）</button>
+    </div>
+    <div style="margin-bottom:8px;">
+      <button class="secondary" onclick="openAdmin()">进入题库管理后台（math-practice_0002_admin.html）</button>
+    </div>
+    <div style="margin-bottom:8px;">
+      <button class="secondary" onclick="openGraph()">查看题库可视化图谱（在后台页面中）</button>
+    </div>
+    <hr style="margin:10px 0;" />
+    <h3 style="margin:4px 0;font-size:15px;">系统结构总览</h3>
+    <ul>
+      <li>学生页面：<code>math-practice_0002.html</code> · 题目展示 + 多解法解析 + 动画 + 成长图谱</li>
+      <li>后台页面：<code>math-practice_0002_admin.html</code> · 题库生成 / 编辑 / 校验 / AI 出题 / 云同步</li>
+      <li>题库 JSON：<code>math-practice_0002_data.json</code> · 所有题目、解法、动画标记、版本信息</li>
+    </ul>
+  </section>
+
+  <section class="panel">
+    <h2>题库状态 · 版本 / AI / 云同步</h2>
+    <div id="dataset-detail" style="font-size:13px;margin-bottom:8px;"></div>
+
+    <h3 style="margin:4px 0;font-size:15px;">快速操作</h3>
+    <button class="secondary" onclick="openAdmin()">打开后台：管理题库 / 版本 / 云同步</button>
+    <button class="secondary" onclick="openStudent()">打开学生页：体验动画解析</button>
+
+    <h3 style="margin:8px 0 4px;font-size:15px;">AI 出题器 / 高级功能入口</h3>
+    <ul>
+      <li>AI 自动出题器（高级版）：在后台页面中配置 Level 和模式。</li>
+      <li>AI 自动补全题库：在后台页面中补全缺失题目（占位）。</li>
+      <li>题库版本管理器：在后台页面中记录版本号和时间。</li>
+      <li>GitHub 云同步：在后台页面中模拟提交 JSON 到仓库。</li>
+      <li>3D 骰子模型 / GIF / WebM：在学生页面中预留入口。</li>
+    </ul>
+  </section>
+
+</div>
+
+<section class="panel" style="margin-top:12px;">
+  <h2>系统结构图 · 树状图（简化版说明）</h2>
+  <p style="font-size:13px;">
+    真正的图谱绘制在后台页面的 <code>graph-canvas</code> 中，这里是文字版结构说明：
+  </p>
+  <ul>
+    <li><b>Level 1~16：</b> 每个 Level 对应一个大主题（认识骰子、路径滚动、空间体积、逻辑推理等）。</li>
+    <li><b>子级别：</b> 每个 Level 下有若干子级别（难度递进）。</li>
+    <li><b>题目：</b> 每个子级别下有多道题目，包含：
+      <ul>
+        <li>题干（statement）</li>
+        <li>答案（answer）</li>
+        <li>初始布局（initialTop / initialFront / initialRight）</li>
+        <li>路径（path）</li>
+        <li>多解法（solutions：方法一~四）</li>
+        <li>动画标记（hasAnimation）</li>
+        <li>3D 标记（has3D）</li>
+      </ul>
+    </li>
+  </ul>
+</section>
+
+<script>
+// ========== 自动检测题库状态 ==========
+function checkDatasetStatus() {
+  const statusEl = document.getElementById("dataset-status");
+  const detailEl = document.getElementById("dataset-detail");
+
+  fetch("https://always001.github.io/math-practice_0002_data.json")
+    .then(res => {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.json();
+    })
+    .then(json => {
+      const levels = json.levels || [];
+      const totalLevels = levels.length;
+      let totalProblems = 0;
+      levels.forEach(l => {
+        (l.subLevels || []).forEach(s => {
+          totalProblems += (s.problems || []).length;
+        });
+      });
+
+      statusEl.innerHTML =
+        `<span class="status-ok">✅ 题库已加载：math-practice_0002_data.json · Levels: ${totalLevels} · 题目总数约：${totalProblems}</span>`;
+
+      detailEl.innerHTML =
+        `当前题库文件：<code>math-practice_0002_data.json</code><br>` +
+        `Level 数量：${totalLevels}；题目总数（估算）：${totalProblems}<br>` +
+        `建议：通过后台页面的“版本管理器”记录版本号，并使用“云同步”保持 GitHub 仓库最新。`;
+    })
+    .catch(err => {
+      statusEl.innerHTML =
+        `<span class="status-error">⚠️ 未能加载题库：math-practice_0002_data.json · ${err.message}</span>`;
+      detailEl.innerHTML =
+        `请确认：<br>` +
+        `1. 是否已在 GitHub 仓库根目录上传 <code>math-practice_0002_data.json</code><br>` +
+        `2. 是否已正确配置 GitHub Pages（always001.github.io）<br>` +
+        `3. 可以先在后台页面生成题库 JSON 并下载，再上传到仓库。`;
+    });
+}
+
+// ========== 入口导航 ==========
+function openStudent() {
+  window.location.href = "https://always001.github.io/math-practice_0002.html";
+}
+function openAdmin() {
+  window.location.href = "https://always001.github.io/math-practice_0002_admin.html";
+}
+function openGraph() {
+  window.location.href = "https://always001.github.io/math-practice_0002_admin.html#graph";
+}
+
+// ========== 初始化 ==========
+window.onload = checkDatasetStatus;
+</script>
+
+</body>
+</html>
