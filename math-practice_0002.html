@@ -5,62 +5,200 @@
 <title>🎲 数学乐园 · 骰子专题 · math-practice_0002</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <style>
+  :root {
+    --bg: #f5f7fb;
+    --card-bg: #ffffff;
+    --primary: #4a6cf7;
+    --primary-soft: #e0e6ff;
+    --border-soft: #e2e6f3;
+    --text-main: #222;
+    --text-sub: #666;
+  }
+  * { box-sizing: border-box; }
   body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     margin: 0;
     padding: 0;
-    background: #f5f7fb;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: radial-gradient(circle at top left, #eef2ff, #f5f7fb);
+    color: var(--text-main);
   }
   header {
-    background: #4a6cf7;
+    background: linear-gradient(120deg, #4a6cf7, #7b5dfd);
     color: #fff;
-    padding: 10px 16px;
+    padding: 14px 18px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
   }
   header h1 {
     margin: 0;
     font-size: 20px;
+    letter-spacing: 0.03em;
   }
   header small {
     display: block;
+    margin-top: 4px;
     font-size: 12px;
-    opacity: 0.85;
+    opacity: 0.9;
   }
   main {
-    padding: 12px;
-    max-width: 1100px;
-    margin: 0 auto;
+    max-width: 1200px;
+    margin: 16px auto;
+    padding: 0 12px 20px;
   }
-  .grid {
+  .layout {
     display: grid;
-    grid-template-columns: 2fr 1.2fr;
-    gap: 12px;
+    grid-template-columns: 2.2fr 1.2fr;
+    gap: 14px;
   }
   .panel {
-    background: #fff;
-    border-radius: 8px;
-    padding: 10px 12px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 12px 14px;
+    box-shadow: 0 4px 10px rgba(15,23,42,0.06);
+    border: 1px solid var(--border-soft);
   }
   .panel h2 {
-    margin-top: 0;
-    font-size: 18px;
+    margin: 0 0 8px;
+    font-size: 17px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .panel h2::before {
+    content: "◆";
+    font-size: 10px;
+    color: var(--primary);
+  }
+  .meta {
+    font-size: 13px;
+    color: var(--text-sub);
+    margin-bottom: 6px;
+  }
+  .statement {
+    font-size: 15px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: #f8f9ff;
+    border: 1px dashed #d3d8f5;
+    margin-bottom: 8px;
+  }
+  .answer-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .answer-row label {
+    font-size: 14px;
+  }
+  input[type="text"] {
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid #cbd5f5;
+    min-width: 120px;
+    font-size: 14px;
+  }
+  input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 1px rgba(74,108,247,0.25);
   }
   button {
     padding: 6px 10px;
-    border-radius: 4px;
+    border-radius: 999px;
     border: none;
     cursor: pointer;
-    font-size: 14px;
-    margin-right: 6px;
-    margin-top: 4px;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
   }
-  button.primary { background: #4a6cf7; color: #fff; }
-  button.secondary { background: #e0e4ff; color: #333; }
-  input[type="text"] {
-    padding: 6px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
+  button.primary {
+    background: var(--primary);
+    color: #fff;
+  }
+  button.primary:hover {
+    background: #3b5ae0;
+  }
+  button.secondary {
+    background: var(--primary-soft);
+    color: #333;
+  }
+  button.secondary:hover {
+    background: #d4dcff;
+  }
+  .answer-result {
+    font-size: 13px;
+    min-height: 18px;
+  }
+  .solution-panel {
+    border-radius: 8px;
+    border: 1px solid #e1e4f5;
+    margin-bottom: 8px;
+    background: #fafbff;
+  }
+  .solution-title {
+    padding: 6px 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .solution-title::after {
+    content: "展开 ▾";
+    font-size: 11px;
+    color: var(--text-sub);
+  }
+  .solution-title.open::after {
+    content: "收起 ▴";
+  }
+  .solution-content {
+    padding: 6px 10px 8px;
+    font-size: 13px;
+    color: var(--text-main);
+  }
+  .solution-content p {
+    margin: 4px 0;
+  }
+  #animation-area h3,
+  #threejs-area h3 {
+    margin: 6px 0;
+    font-size: 14px;
+    color: var(--text-sub);
+  }
+  #stats-area {
+    font-size: 13px;
+    color: var(--text-sub);
+    margin: 6px 0 8px;
+  }
+  select {
+    padding: 4px 6px;
+    border-radius: 6px;
+    border: 1px solid #cbd5f5;
+    font-size: 13px;
+    background: #f8f9ff;
+  }
+  select:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  .right-panel-row {
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+  .right-panel-row label {
+    margin-right: 4px;
+  }
+  canvas {
+    background: #fff;
+  }
+  @media (max-width: 900px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
 </head>
@@ -68,32 +206,33 @@
 
 <header>
   <h1>🎲 数学乐园 · 骰子专题 · math-practice_0002</h1>
-  <small>学生练习页面 · 从 JSON 题库加载 · 多解法解析 · 立体图 & 动画</small>
+  <small>学生练习页面 · 1+3 风格 · 多解法解析 · 立体图旋转动画 · 成长图谱</small>
 </header>
 
 <main>
 
 <section class="panel">
   <h2>当前题目</h2>
-  <div id="problem-meta" style="font-size:13px;color:#555;margin-bottom:6px;"></div>
-  <div id="problem-statement" style="margin-bottom:8px;"></div>
-  <div>
+  <div id="problem-meta" class="meta"></div>
+  <div id="problem-statement" class="statement"></div>
+  <div class="answer-row">
     <label>你的答案：</label>
-    <input type="text" id="answer-input" style="width:120px;" />
+    <input type="text" id="answer-input" />
     <button class="primary" onclick="submitAnswer()">提交答案</button>
-    <span id="answer-result" style="margin-left:8px;font-size:13px;"></span>
+    <button class="secondary" onclick="showExplain()">不会？点我讲解</button>
+    <span id="answer-result" class="answer-result"></span>
   </div>
 </section>
 
-<div class="grid">
+<div class="layout">
 
   <section class="panel">
-    <h2>题目解析</h2>
+    <h2>题目解析 · 多解法视角</h2>
     <div id="solution-panels"></div>
 
     <div id="animation-area" style="margin-top:12px; display:none;">
-      <h3>立体图 & 动画推理</h3>
-      <canvas id="dice-canvas" width="260" height="200" style="border:1px solid #ddd;"></canvas>
+      <h3>立体图 · 第二种解法动画</h3>
+      <canvas id="dice-canvas" width="260" height="200" style="border:1px solid #ddd;border-radius:8px;"></canvas>
       <br>
       <button class="secondary" onclick="playDicePathAnimation()">播放路径动画</button>
       <button class="secondary" onclick="resetDiceView()">重置立体图</button>
@@ -101,7 +240,7 @@
 
     <div id="threejs-area" style="margin-top:12px; display:none;">
       <h3>3D 骰子模型（占位）</h3>
-      <div id="dice-3d" style="width:260px;height:200px;border:1px solid #ddd;"></div>
+      <div id="dice-3d" style="width:260px;height:200px;border:1px solid #ddd;border-radius:8px;"></div>
       <button class="secondary" onclick="initDice3D()">初始化 3D 骰子</button>
       <button class="secondary" onclick="animateDice3DPath(['R','R','F'])">播放 3D 路径动画</button>
     </div>
@@ -109,20 +248,20 @@
 
   <section class="panel">
     <h2>学习进度与成长图谱</h2>
-    <div style="margin-bottom:8px;">
+    <div class="right-panel-row">
       <label>选择大级别：</label>
       <select id="level-select"></select>
     </div>
-    <div style="margin-bottom:8px;">
+    <div class="right-panel-row">
       <label>选择子级别：</label>
       <select id="sublevel-select"></select>
       <button class="secondary" onclick="jumpToSelectedSubLevel()">跳到该级别出题</button>
     </div>
-    <div style="margin-bottom:8px;">
+    <div class="right-panel-row">
       <button class="secondary" onclick="resetStats()">重置统计</button>
     </div>
-    <div id="stats-area" style="font-size:13px;margin-bottom:8px;"></div>
-    <canvas id="growth-canvas" width="260" height="180" style="border:1px solid #ddd;"></canvas>
+    <div id="stats-area"></div>
+    <canvas id="growth-canvas" width="260" height="180" style="border:1px solid #ddd;border-radius:8px;"></canvas>
   </section>
 
 </div>
@@ -209,7 +348,10 @@ function showProblemByIndex(idx) {
   const sub = level.subLevels[currentSubLevelIndex];
 
   if (!sub || !sub.problems || !sub.problems.length) {
+    document.getElementById("problem-meta").textContent = "";
     document.getElementById("problem-statement").textContent = "此子级别暂无题目。";
+    document.getElementById("solution-panels").innerHTML = "";
+    document.getElementById("animation-area").style.display = "none";
     return;
   }
 
@@ -230,6 +372,16 @@ function showProblemByIndex(idx) {
 
   if (currentProblem.hasAnimation) {
     initDiceViewForCurrentProblem(currentProblem);
+  }
+}
+
+// ========== 「不会？点我讲解」 ==========
+function showExplain() {
+  const firstContent = document.querySelector("#solution-panels .solution-content");
+  const firstTitle = document.querySelector("#solution-panels .solution-title");
+  if (firstContent && firstTitle) {
+    firstContent.style.display = "block";
+    firstTitle.classList.add("open");
   }
 }
 
@@ -302,22 +454,19 @@ function renderSolutionPanels(problem) {
     return;
   }
 
+  let hasSecondAnimationSolution = false;
+
   problem.solutions.forEach((sol, idx) => {
     const panel = document.createElement("div");
-    panel.style.border = "1px solid #ddd";
-    panel.style.borderRadius = "6px";
-    panel.style.marginBottom = "8px";
-    panel.style.padding = "8px";
+    panel.className = "solution-panel";
 
     const title = document.createElement("div");
-    title.style.cursor = "pointer";
-    title.style.fontWeight = "bold";
-    title.style.marginBottom = "4px";
+    title.className = "solution-title";
     title.textContent = sol.method || `方法 ${idx + 1}`;
 
     const content = document.createElement("div");
+    content.className = "solution-content";
     content.style.display = "none";
-    content.style.marginTop = "6px";
 
     (sol.steps || []).forEach(step => {
       const p = document.createElement("p");
@@ -326,17 +475,27 @@ function renderSolutionPanels(problem) {
     });
 
     title.onclick = () => {
-      content.style.display =
-        content.style.display === "none" ? "block" : "none";
+      const isHidden = content.style.display === "none";
+      content.style.display = isHidden ? "block" : "none";
+      title.classList.toggle("open", isHidden);
+
+      if (idx === 1 && problem.hasAnimation) {
+        document.getElementById("animation-area").style.display = "block";
+        initDiceViewForCurrentProblem(problem);
+      }
     };
 
     panel.appendChild(title);
     panel.appendChild(content);
     box.appendChild(panel);
+
+    if (idx === 1 && problem.hasAnimation) {
+      hasSecondAnimationSolution = true;
+    }
   });
 
-  const anim = document.getElementById("animation-area");
-  anim.style.display = problem.hasAnimation ? "block" : "none";
+  document.getElementById("animation-area").style.display =
+    hasSecondAnimationSolution ? "block" : "none";
 
   const threeArea = document.getElementById("threejs-area");
   threeArea.style.display = problem.has3D ? "block" : "none";
@@ -384,7 +543,7 @@ function initDiceViewForCurrentProblem(problem) {
 
 function playDicePathAnimation() {
   const ctx = getDiceCanvasCtx();
-  if (!ctx) return;
+  if (!ctx || !currentProblem) return;
 
   let state = {
     top: currentProblem.initialTop   || 1,
@@ -392,7 +551,7 @@ function playDicePathAnimation() {
     right: currentProblem.initialRight || 3
   };
 
-  const path = currentProblem.path || [];
+  const path = currentProblem.path || ["右", "右", "前"];
   let stepIndex = 0;
 
   drawDiceStatic(ctx, state);
@@ -424,7 +583,7 @@ function playDicePathAnimation() {
 
 function resetDiceView() {
   const ctx = getDiceCanvasCtx();
-  if (!ctx) return;
+  if (!ctx || !currentProblem) return;
   const top   = currentProblem.initialTop   || 1;
   const front = currentProblem.initialFront || 2;
   const right = currentProblem.initialRight || 3;
