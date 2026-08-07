@@ -10,11 +10,13 @@ body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   margin: 0;
   padding: 0;
+  line-height: 1.6;
   background: #f5f7fb;
 }
 
 header {
-  background: #4a6cf7;
+  /* background: #4a6cf7; */
+  background: linear-gradient(to top, rgb(74, 108, 247), rgb(143, 179, 255) 100%);
   color: #fff;
   padding: 12px 16px;
 }
@@ -39,15 +41,37 @@ main {
 /* 通用卡片 */
 .panel {
   background: #fff;
-  border-radius: 12px;
   padding: 16px 20px;
-  margin-bottom: 16px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
 }
 
-.panel h2, .panel h3 {
-  margin-top: 0;
+/* 让 panel 内部元素之间保持一致的间距（0003 有，你现在没有） */
+.panel > * + * {
+  margin-top: 6px;
 }
+
+.panel h2 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 20px;
+  color: #333;
+}
+
+.panel h3 {
+  margin-top: 0;
+  font-size: 16px;
+}
+
+.meta-line {
+  font-size: 12px;  /* 稍微小一点  13px→12px */
+  color: #666;
+  margin-top: 10px;
+  margin-bottom: 6px;
+  line-height: 1.4;   /* ⭐ 关键：让统计行更紧凑 */
+}
+
 
 /* 输入区 */
 .input-row {
@@ -79,15 +103,6 @@ button.primary {
   color: #fff;
 }
 
-button.secondary {
-  background: #e0e4ff;
-  color: #333;
-}
-
-button.danger {
-  background: #ff6b6b;
-  color: #fff;
-}
 
 /* 多解法卡片 */
 .explain-block {
@@ -157,6 +172,54 @@ button.danger {
   border: 1px solid #e0e4ff;
   border-radius: 10px;
 }
+
+#growth-chart {
+  width:100%;
+  height:200px;
+  margin-top: 8px;
+  padding: -1px 8px;   /* 原来是 12px 14px */
+  border-radius: 12px;
+  min-height: 80px;   /* 原来是 120px */
+  background: #f0f3ff;      /* 原来是 #fff，改成淡紫 */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);  /* 如果想完全跟上面卡片统一，可以加这一句 */
+}
+
+
+
+.level-select-row {
+  display: flex;
+  align-items: flex-end;   /* ⭐ 关键：让 label + select + button 底部对齐  center→flex-end*/
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.level-select-row label {
+  margin-right: 4px;
+}
+
+button.secondary {
+  background: #4A6CF7;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+button.danger {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+.empty-tip {
+  font-size: 16px;        /* 提示比统计略大 */
+  color: #000000;
+  margin-top: 4px;
+}
+
+
 </style>
 </head>
 
@@ -458,14 +521,94 @@ function initSelectors() {
    统计区
    =========================== */
 function updateStatsSummary() {
-  document.getElementById("stats-summary").textContent =
-    `正确：${userStats.correct}  错误：${userStats.wrong}`;
+  // 0002 不再单独显示“正确：x 错误：y”
+  const el = document.getElementById("stats-summary");
+  if (el) el.textContent = "";
 }
 
 function renderGrowthChart() {
-  document.getElementById("growth-chart").textContent =
-    `已完成题目：${Object.keys(userStats.levelProgress).length}`;
+  const statsDiv = document.getElementById("stats-summary");
+  const chartDiv = document.getElementById("growth-chart");
+  const entries = Object.entries(userStats.levelProgress);
+
+  // ⭐ 没有数据时
+  if (entries.length === 0) {
+    statsDiv.innerHTML = `
+      已做题数：0，正确：0，错误：0，整体正确率：0.0%
+    `;
+    
+    chartDiv.innerHTML = `
+      <div class="empty-tip">还没有数据，先做几道题试试吧。</div>
+    `;
+
+    //chartDiv.innerHTML = "";  // 图谱区域为空
+
+    return;
+  }
+
+  // ⭐ 有数据时
+  const total = entries.length;
+  const correct = entries.filter(([id, info]) => info.isCorrect).length;
+  const wrong = total - correct;
+  const correctRate = Math.round(correct / total * 100);
+
+  statsDiv.innerHTML = `
+    已做题数：${total}，
+    正确：${correct}，
+    错误：${wrong}，
+    整体正确率：${correctRate}%
+  `;
+
+  let html = `
+    <div style="
+      display:flex;
+      align-items:flex-end;
+      gap:12px;
+      padding:8px 0;
+      /* height:150px; */
+      height:200px;
+      border-radius:12px;
+      background:#f0f3ff;
+      box-shadow:0 2px 6px rgba(0,0,0,0.05);
+    ">
+  `;
+
+  const BAR_HEIGHT = 167;
+  const BAR_WIDTH  = 20;
+  const FONT_SIZE  = 9;
+
+  entries.forEach(([problemId, info]) => {
+    const color = info.isCorrect ? "#4A6CF7" : "#FFB7D5 !important";
+
+    html += `
+      <div style="text-align:center; width:${BAR_WIDTH}px;">
+        <div style="
+          width:${BAR_WIDTH}px;
+          height:${BAR_HEIGHT}px;
+          background:${color};
+          /* border-radius:6px; */
+          border-radius: 4px 4px 0 0;
+          bottom: 0;
+          display:flex;
+          align-items:flex-end;
+          justify-content:center;
+          color:#fff;
+          font-size:${FONT_SIZE}px;
+          padding-bottom:3px;
+          background: linear-gradient(to top, rgb(74, 108, 247), rgb(143, 179, 255) 100%);
+        ">
+          ${problemId}
+        </div>
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+  chartDiv.innerHTML = html;
 }
+
+
+
 
 /* ===========================
    多解法卡片渲染
