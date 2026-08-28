@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>日语默写平台</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="p-4">
+<button class="btn btn-outline-secondary mb-3" onclick="toggleTheme()">深色模式切换</button>
+<script src="js/theme.js"></script>
+
+
+<h1 class="mb-4">日语默写平台</h1>
+
+<div class="row g-3">
+
+  <div class="col-md-6">
+    <div class="card p-3">
+      <h3>听力默写</h3>
+      <p>选择题库后进入默写模式。</p>
+      <button class="btn btn-primary" onclick="goDictation()">开始默写</button>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card p-3">
+      <h3>错题本</h3>
+      <p>查看并复习所有错题。</p>
+      <a href="wrong.html" class="btn btn-danger">打开错题本</a>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card p-3">
+      <h3>设置</h3>
+      <p>随机出题、自动播放、计时器开关。</p>
+      <a href="settings.html" class="btn btn-secondary">打开设置</a>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card p-3">
+      <h3>题库管理</h3>
+      <p>导入自己的题库 JSON。</p>
+      <a href="manage.html" class="btn btn-warning">打开题库管理</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function goDictation(){
+  // 简单版：直接进入默写页面
+  window.location.href = "dictation.html";
+}
+</script>
+
+</body>
+</html>
