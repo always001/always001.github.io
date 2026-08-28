@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>英语听力默写</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="themeBar">
+  <div class="themeItem" onclick="loadTheme('daily')">🗣️ 日常口语</div>
+  <div class="themeItem" onclick="loadTheme('patriotic')">🇺🇸 爱国祝语</div>
+  <div class="themeItem" onclick="loadTheme('business')">💼 商务英语</div>
+  <div class="themeItem" onclick="loadTheme('travel')">✈️ 旅游英语</div>
+  <div class="themeItem" onclick="loadTheme('emotion')">❤️ 情感表达</div>
+  <div class="themeItem" onclick="loadTheme('listening')">🎧 听力专项</div>
+  <div class="themeItem" onclick="loadTheme('wrong')">🔥 高频错题</div>
+  <div class="themeItem" onclick="loadTheme('ai')">⭐ AI 推荐</div>
+</div>
+
+<h2 id="title">英语听力默写练习【内测初·2026.08.28版】</h2>
+
+<div id="playerBox">
+  <button id="playBtn">▶ 播放句子</button>
+</div>
+
+<div id="inputBox">
+  <div id="wordInputs"></div>
+</div>
+
+<div id="navBox">
+  <button id="prevBtn">上一题</button>
+  <button id="checkBtn">提交答案</button>
+  <button id="nextBtn">下一题</button>
+</div>
+
+<div id="statsBox">
+  <div>已答对：<span id="correctCount">0</span></div>
+  <div>答错：<span id="wrongCount">0</span></div>
+  <div>正确率：<span id="accuracy">0%</span></div>
+</div>
+
+<div id="result"></div>
+
+<div id="wordPopup" class="popup">
+  <div id="popupContent"></div>
+  <button id="addWordBtn">加入生词本</button>
+  <button id="closePopupBtn">关闭</button>
+</div>
+
+<script src="dictation.js"></script>
+</body>
+</html>
