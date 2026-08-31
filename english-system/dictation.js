@@ -71,6 +71,11 @@ document.getElementById("playBtn").onclick = () => {
   const q = getCurrent();
   if (q) {
     const utter = new SpeechSynthesisUtterance(q.text);
+    
+    // 尝试使用英文语音（安卓通常只有一个）
+    const enVoice = voices.find(v => v.lang.startsWith("en"));
+    if (enVoice) utter.voice = enVoice;
+    
     utter.lang = "en-US";
     utter.rate = 0.95;
     speechSynthesis.speak(utter);
@@ -185,5 +190,26 @@ function saveWrong(q) {
   list.push(q);
   localStorage.setItem("wrongEnglish", JSON.stringify(list));
 }
+
+
+let voices = [];
+
+function loadVoices() {
+  voices = speechSynthesis.getVoices();
+
+  // 安卓第一次通常返回空数组，需要延迟再试
+  if (voices.length === 0) {
+    setTimeout(() => {
+      voices = speechSynthesis.getVoices();
+    }, 300);
+  }
+}
+
+// 监听语音库加载（安卓必须）
+speechSynthesis.onvoiceschanged = loadVoices;
+
+// 电脑端会立即加载，安卓端稍后加载
+loadVoices();
+
 
 init();
