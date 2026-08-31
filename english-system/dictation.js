@@ -216,5 +216,10 @@ speechSynthesis.onvoiceschanged = loadVoices;
 // 电脑端会立即加载，安卓端稍后加载
 loadVoices();
 
+// 2. 测试按钮
+document.getElementById("testVoiceBtn").onclick = () => {
+  alert(JSON.stringify(speechSynthesis.getVoices(), null, 2));
+};
+
 
 init();
